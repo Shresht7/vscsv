@@ -26,5 +26,17 @@ export function deactivate() { }
  * @returns A 2D array of the csv document
  */
 function parseCsv(doc: string): string[][] {
-	return [["Hello World!"]];
+	/** The resulting 2D array */
+	let result: string[][] = [];
+
+	// Split the document into lines
+	const lines = doc.split("\n");
+
+	// Iterate over each line and split it into columns
+	for (const line of lines) {
+		result.push(line.split(","));
+	}
+
+	// Return the result
+	return result;
 }
