@@ -13,7 +13,7 @@ export function parse(doc: string, delimiter: string = ","): string[][] {
     let result: string[][] = [];
 
     // Split the document into lines
-    const lines = doc.split("\n");
+    const lines = doc.split(/\r?\n/);
 
     // Iterate over each line and split it into columns
     for (const line of lines) {
