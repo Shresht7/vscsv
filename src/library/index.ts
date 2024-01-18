@@ -1,10 +1,8 @@
 // Library
-import { parse } from "./parse";
+import { Parser } from "./parse";
 
 // ----------
 // CSV PARSER
 // ----------
 
-export const CSV = {
-    parse: (doc: string): string[][] => parse(doc, ",")
-};
+export class CSV extends Parser { }
