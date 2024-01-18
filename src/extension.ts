@@ -1,10 +1,8 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
+// Library
 import * as vscode from 'vscode';
-import { parseCsv } from './csv';
+import { CSV } from './library';
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
+/** This method is called when your extension is activated */
 export function activate(context: vscode.ExtensionContext) {
 
 	vscode.window.showInformationMessage('CSV Extension is now active!');
@@ -12,11 +10,11 @@ export function activate(context: vscode.ExtensionContext) {
 	if (vscode.window.activeTextEditor?.document) {
 		const document = vscode.window.activeTextEditor.document;
 		if (document.fileName.endsWith(".csv")) {
-			console.log(parseCsv(document.getText()));
+			console.log(CSV.parse(document.getText()));
 		}
 	}
 
 }
 
-// This method is called when your extension is deactivated
+/** This method is called when your extension is deactivated */
 export function deactivate() { }
