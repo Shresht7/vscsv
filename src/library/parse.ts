@@ -89,4 +89,16 @@ export class Parser {
         return results;
     }
 
+    /**
+     * Serializes a 2D array into a document using the given delimiter
+     * @param data The 2D array to serialize
+     * @param delimiter The delimiter to use (default: `,`)
+     * @returns A document
+     */
+    public static serialize(data: Data, delimiter: string = ","): string {
+        return data.map(row =>
+            row.map(cell => cell.value).join(delimiter)
+        ).join("\n");
+    }
+
 }
