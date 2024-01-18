@@ -1,3 +1,32 @@
+// ----------------
+// TYPE DEFINITIONS
+// ----------------
+
+/**
+ * A 2D array of data.
+ * It is a collection of {@link Row}s, which in-turn are collections of {@link Cell}s.
+ * @see {@link Row}
+ * @see {@link Cell}
+ */
+type Data = Row[];
+
+/**
+ * A collection of {@link Cell}s. A {@link Cell} contains information about the value,
+ * and it's position in the document (line and column).
+ * @see {@link Cell}
+ */
+type Row = Cell[];
+
+/**
+ * A cell contains information about the value, and it's position in the document (line and column)
+ * @see {@link Row}
+ */
+type Cell = {
+    value: string;
+    line: number;
+    column: number;
+};
+
 // -----
 // PARSE
 // -----
@@ -6,7 +35,7 @@
 export class Parser {
 
     /** The 2D array of data */
-    private readonly data: string[][] = [];
+    private readonly data: Data = [];
 
     /**
      * Instantiates a new {@link Parser}
@@ -21,7 +50,7 @@ export class Parser {
     }
 
     /** The column headers */
-    get headers(): string[] {
+    get headers(): Cell[] {
         return this.data[0];
     }
 
@@ -31,16 +60,27 @@ export class Parser {
      * @param delimiter The delimiter to use (default: `,`)
      * @returns A 2D array of the document
      */
-    public static parse(doc: string, delimiter: string = ","): string[][] {
+    public static parse(doc: string, delimiter: string = ","): Data {
         /** A 2D array of the results */
-        const results: string[][] = [];
+        const results: Row[] = [];
 
         // Split the document into lines
         const lines = doc.split(/\r?\n/);
 
-        // Iterate over each line and split it into columns
-        for (const line of lines) {
-            results.push(line.split(delimiter));
+        // Iterate over each line and split it into cells
+        for (let l = 0; l < lines.length; l++) {
+
+            // Determine the cell values, and their positions
+            const line = lines[l];
+            const columns = line.split(delimiter);
+            const cells: Cell[] = columns.map(value => ({
+                value,
+                line: l,
+                column: line.indexOf(value)
+            }));
+
+            // Add the cells to the data
+            results.push(cells);
         }
 
         // Return the results
