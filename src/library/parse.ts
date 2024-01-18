@@ -25,6 +25,7 @@ type Cell = {
     value: string;
     line: number;
     column: number;
+    columnEnd: number;
 };
 
 // -----
@@ -76,7 +77,8 @@ export class Parser {
             const cells: Cell[] = columns.map(value => ({
                 value,
                 line: l,
-                column: line.indexOf(value)
+                column: line.indexOf(value),
+                columnEnd: line.indexOf(value) + value.length
             }));
 
             // Add the cells to the data
