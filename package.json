@@ -13,7 +13,17 @@
     "onLanguage:plaintext"
   ],
   "main": "./out/extension.js",
-  "contributes": {},
+  "contributes": {
+    "languages": [
+      {
+        "id": "csv",
+        "extensions": [
+          ".csv"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ]
+  },
   "scripts": {
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",

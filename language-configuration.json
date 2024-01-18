@@ -1,0 +1,10 @@
+{
+    // When a opening quote is inserted, insert the closing quote automatically
+    "autoClosingPairs": [
+      ["\"", "\""]
+    ],
+    // Quotes can be used to surround the selected text
+    "surroundingPairs": [
+      ["\"", "\""]
+    ]
+  }
