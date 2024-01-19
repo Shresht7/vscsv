@@ -1,4 +1,5 @@
 // Library
+import { Parser } from ".";
 import { _Parser, ParserConstructorOptions } from "./_base";
 
 // -----
@@ -14,7 +15,7 @@ import { _Parser, ParserConstructorOptions } from "./_base";
  * 
  * @see {@link Cell}
  */
-export class VSCSV extends _Parser<Cell> {
+export class VSCSV extends Parser<Cell> {
 
     /**
      * Instantiates a new {@link VSCSV}
@@ -24,17 +25,32 @@ export class VSCSV extends _Parser<Cell> {
         super(opts);
     }
 
-    protected parseLine(line: string, lineNumber: number): Cell[] {
-        return line.split(this.delimiter).map((value, columnNumber) => ({
+    protected parseCell(value: string, columnNumber: number, lineNumber: number): Cell {
+        return {
             value,
             line: lineNumber,
             column: columnNumber,
             columnEnd: columnNumber + value.length,
-        }));
+            toString: () => value
+        };
+    }
+
+    protected parseLine(line: string, lineNumber: number): Cell[] {
+        return line
+            .split(this.delimiter)
+            .map((value, columnNumber) => {
+                return this.parseCell(value, columnNumber, lineNumber);
+            });
+    }
+
+    protected serializeCell(cell: Cell): string {
+        return cell.value;
     }
 
     protected serializeLine(cells: Cell[]): string {
-        return cells.map(cell => cell.value).join(this.delimiter);
+        return cells
+            .map(this.serializeCell)
+            .join(this.delimiter);
     }
 
 }
@@ -55,4 +71,5 @@ type Cell = {
     column: number;
     /** The column number of the cell's end */
     columnEnd: number;
+    toString: () => string;
 };

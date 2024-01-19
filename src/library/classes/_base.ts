@@ -65,6 +65,14 @@ export abstract class _Parser<T> {
     protected abstract parseLine(line: string, lineNumber?: number): T[];
 
     /**
+     * Parses a string value into a cell
+     * @param value The value to parse into a cell
+     * @param columnNumber The column number of the cell being parsed
+     * @param lineNumber The line number of the cell being parsed
+     */
+    protected abstract parseCell(value: string, columnNumber?: number, lineNumber?: number): T;
+
+    /**
      * Parses a string into a 2D array using the given delimiter
      * @param doc The string to parse
      * @returns This {@link _Parser} instance
@@ -91,6 +99,12 @@ export abstract class _Parser<T> {
      * @param cells The array of cells to serialize into a string
      */
     protected abstract serializeLine(cells: T[]): string;
+
+    /**
+     * Serializes a cell into a string
+     * @param value The cell to serialize into a string
+     */
+    protected abstract serializeCell(value: T): string;
 
     /**
      * Serializes a 2D array into a string using the given delimiter

@@ -16,8 +16,16 @@ export class SimpleParser extends _Parser<string> {
         super(opts);
     }
 
+    protected parseCell(value: string): string {
+        return value;
+    }
+
     protected parseLine(line: string): string[] {
         return line.split(this.delimiter);
+    }
+
+    protected serializeCell(value: string): string {
+        return value;
     }
 
     protected serializeLine(cells: string[]): string {
@@ -34,7 +42,7 @@ export class SimpleParser extends _Parser<string> {
  * A slightly more advanced implementation of the {@link _Parser} class
  * that supports quoted strings.
  */
-export class Parser extends _Parser<string> {
+export class Parser<T = string> extends _Parser<T> {
 
     /**
      * Instantiates a new {@link Parser}
@@ -44,9 +52,17 @@ export class Parser extends _Parser<string> {
         super(opts);
     }
 
-    protected parseLine(line: string): string[] {
+    protected parseCell(value: string, columnNumber?: number, lineNumber?: number): T {
+        return value as unknown as T;
+    }
+
+    protected serializeCell(value: T): string {
+        return value as unknown as string;
+    }
+
+    protected parseLine(line: string, lineNumber?: number): T[] {
         /** The cells of the line */
-        const cells: string[] = [];
+        const cells: T[] = [];
 
         /** Whether or not the current character is inside of a quoted string */
         let isQuoted = false;
@@ -74,7 +90,7 @@ export class Parser extends _Parser<string> {
             if (char === this.delimiter && !isQuoted) {
                 // If the current character is the delimiter and the `isQuoted` flag
                 // is not set, push the current cell to the `cells` array and reset the `cell` variable
-                cells.push(cell);
+                cells.push(this.parseCell(cell));
                 cell = "";
                 continue;
             } else {
@@ -88,15 +104,16 @@ export class Parser extends _Parser<string> {
         // If there is remnant data in the `cell` variable,
         // push it to the `cells` array as the last cell
         if (cell) {
-            cells.push(cell);
+            cells.push(this.parseCell(cell));
         }
 
         // Return the cells parsed from the line
         return cells;
     }
 
-    protected serializeLine(cells: string[]): string {
-        return cells.map((cell) => {
+    protected serializeLine(cells: T[]): string {
+        return cells.map((c) => {
+            const cell = this.serializeCell(c);
             const needsQuoting = cell.includes(this.delimiter) || cell.includes('\\');
             return needsQuoting ? `"${cell}"` : cell;
         }).join(this.delimiter);
