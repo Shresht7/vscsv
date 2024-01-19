@@ -1,5 +1,5 @@
 // Library
-import { _Parser } from "./_base";
+import { _Parser, ParserConstructorOptions } from "./_base";
 
 // -----
 // VSCSV
@@ -20,8 +20,8 @@ export class VSCSV extends _Parser<Cell> {
      * Instantiates a new {@link VSCSV}
      * @param delimiter The delimiter to use (default: `,`)
      */
-    constructor(delimiter: string = ",") {
-        super(delimiter);
+    constructor(opts?: Partial<ParserConstructorOptions>) {
+        super(opts);
     }
 
     protected parseLine(line: string, lineNumber: number): Cell[] {
