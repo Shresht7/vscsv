@@ -1,5 +1,5 @@
 // Library
-import { Parser } from "./classes";
+import { Parser } from "./Parser";
 
 // ----------
 // CSV PARSER
