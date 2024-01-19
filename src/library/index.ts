@@ -1,8 +1,6 @@
-// Library
-import { Parser } from "./parse";
+// -------
+// LIBRARY
+// -------
 
-// ----------
-// CSV PARSER
-// ----------
-
-export class CSV extends Parser { }
+export * from './CSV';
+export * from './VSCSV';
