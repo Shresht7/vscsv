@@ -1,11 +1,39 @@
 // Library
 import { _Parser, ParserConstructorOptions } from './_base';
 
+// -------------
+// SIMPLE PARSER
+// -------------
+
+/** The most basic implementation of the {@link _Parser} class */
+export class SimpleParser extends _Parser<string> {
+
+    /**
+     * Instantiates a new {@link SimpleParser}
+     * @param opts The options for the {@link SimpleParser} class
+     */
+    constructor(opts?: Partial<ParserConstructorOptions>) {
+        super(opts);
+    }
+
+    protected parseLine(line: string): string[] {
+        return line.split(this.delimiter);
+    }
+
+    protected serializeLine(cells: string[]): string {
+        return cells.join(this.delimiter);
+    }
+
+}
+
 // ------
 // PARSER
 // ------
 
-/** The most basic implementation of the {@link _Parser} class */
+/**
+ * A slightly more advanced implementation of the {@link _Parser} class
+ * that supports quoted strings.
+ */
 export class Parser extends _Parser<string> {
 
     /**

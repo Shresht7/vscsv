@@ -9,10 +9,10 @@ import { CSV } from '../../library';
 
 suite('Parser', () => {
 
-    // SIMPLE PARSER
-    // -------------
+    // PARSER
+    // ------
 
-    suite('SimpleParser', () => {
+    suite('Parser', () => {
 
         suite('Parse', () => {
 
@@ -79,6 +79,49 @@ suite('Parser', () => {
                 assert.deepStrictEqual(actual, expected);
             });
 
+            test('should parse a CSV string with a single cell that has quotes', () => {
+                const input = '"a"';
+                const expected = [['"a"']];
+                const actual = new Parser().parse(input).data;
+                assert.deepStrictEqual(actual, expected);
+            });
+
+            test('should parse a CSV string with cells that have quotes', () => {
+                const input = '"a","b","c"\n"d","e","f"\n"g","h","i"';
+                const expected = [['"a"', '"b"', '"c"'], ['"d"', '"e"', '"f"'], ['"g"', '"h"', '"i"']];
+                const actual = new Parser().parse(input).data;
+                assert.deepStrictEqual(actual, expected);
+            });
+
+            test('should parse a CSV string with quotes', () => {
+                const input = 'a,b,"c,d"';
+                const expected = [['a', 'b', '"c,d"']];
+                const actual = new Parser().parse(input).data;
+                assert.deepStrictEqual(actual, expected);
+            });
+
+            test('should parse a CSV string with quotes and empty columns', () => {
+                const input = 'a,b,"",d';
+                const expected = [['a', 'b', '""', 'd']];
+                const actual = new Parser().parse(input).data;
+                assert.deepStrictEqual(actual, expected);
+            });
+
+            // TODO
+            test.skip('should parse a CSV string with quotes around newlines', () => {
+                const input = 'a,b,"c\nd"';
+                const expected = [['a', 'b', 'c\nd']];
+                const actual = new Parser().parse(input).data;
+                assert.deepStrictEqual(actual, expected);
+            });
+
+            test('should parse a CSV string with quotes around quotes', () => {
+                const input = 'a,b,"""c"""';
+                const expected = [['a', 'b', '"""c"""']];
+                const actual = new Parser().parse(input).data;
+                assert.deepStrictEqual(actual, expected);
+            });
+
         });
 
         suite('Serialize', () => {
@@ -135,6 +178,49 @@ suite('Parser', () => {
             test('should serialize a 2D array of strings with different number of columns in each row', () => {
                 const input = [['a', 'b', 'c'], ['d', 'e'], ['f']];
                 const expected = 'a,b,c\nd,e\nf';
+                const actual = new Parser().serialize(input);
+                assert.deepStrictEqual(actual, expected);
+            });
+
+            test('should serialize a 2D array of strings with a single cell that has quotes', () => {
+                const input = [['"a"']];
+                const expected = '"a"';
+                const actual = new Parser().serialize(input);
+                assert.deepStrictEqual(actual, expected);
+            });
+
+            test('should serialize a 2D array of strings with cells that have quotes', () => {
+                const input = [['"a"', '"b"', '"c"'], ['"d"', '"e"', '"f"'], ['"g"', '"h"', '"i"']];
+                const expected = '"a","b","c"\n"d","e","f"\n"g","h","i"';
+                const actual = new Parser().serialize(input);
+                assert.deepStrictEqual(actual, expected);
+            });
+
+            test('should serialize a 2D array of strings with delimiter included', () => {
+                const input = [['a', 'b', 'c,d']];
+                const expected = 'a,b,"c,d"';
+                const actual = new Parser().serialize(input);
+                assert.deepStrictEqual(actual, expected);
+            });
+
+            test('should serialize a 2D array of strings with quotes and empty columns', () => {
+                const input = [['a', 'b', '""', 'd']];
+                const expected = 'a,b,"",d';
+                const actual = new Parser().serialize(input);
+                assert.deepStrictEqual(actual, expected);
+            });
+
+            // TODO
+            test.skip('should serialize a 2D array of strings with quotes around newlines', () => {
+                const input = [['a', 'b', 'c\nd']];
+                const expected = 'a,b,"c\nd"';
+                const actual = new Parser().serialize(input);
+                assert.deepStrictEqual(actual, expected);
+            });
+
+            test('should serialize a 2D array of strings with quotes around quotes', () => {
+                const input = [['a', 'b', '"""c"""']];
+                const expected = 'a,b,"""c"""';
                 const actual = new Parser().serialize(input);
                 assert.deepStrictEqual(actual, expected);
             });
@@ -217,108 +303,6 @@ suite('Parser', () => {
                 const input = 'a,b,c\n1,2,3\nx,y,z';
                 const expected = undefined;
                 const actual = new Parser().parse(input).getCell(10, 10);
-                assert.deepStrictEqual(actual, expected);
-            });
-
-        });
-
-    });
-
-    // ADVANCED PARSER
-    // ---------------
-
-    suite('Parser', () => {
-
-        suite('Parse', () => {
-
-            test('should parse a CSV string with a single cell that has quotes', () => {
-                const input = '"a"';
-                const expected = [['"a"']];
-                const actual = new Parser().parse(input).data;
-                assert.deepStrictEqual(actual, expected);
-            });
-
-            test('should parse a CSV string with cells that have quotes', () => {
-                const input = '"a","b","c"\n"d","e","f"\n"g","h","i"';
-                const expected = [['"a"', '"b"', '"c"'], ['"d"', '"e"', '"f"'], ['"g"', '"h"', '"i"']];
-                const actual = new Parser().parse(input).data;
-                assert.deepStrictEqual(actual, expected);
-            });
-
-            test('should parse a CSV string with quotes', () => {
-                const input = 'a,b,"c,d"';
-                const expected = [['a', 'b', '"c,d"']];
-                const actual = new Parser().parse(input).data;
-                assert.deepStrictEqual(actual, expected);
-            });
-
-            test('should parse a CSV string with quotes and empty columns', () => {
-                const input = 'a,b,"",d';
-                const expected = [['a', 'b', '""', 'd']];
-                const actual = new Parser().parse(input).data;
-                assert.deepStrictEqual(actual, expected);
-            });
-
-            // TODO
-            test.skip('should parse a CSV string with quotes around newlines', () => {
-                const input = 'a,b,"c\nd"';
-                const expected = [['a', 'b', 'c\nd']];
-                const actual = new Parser().parse(input).data;
-                assert.deepStrictEqual(actual, expected);
-            });
-
-            test('should parse a CSV string with quotes around quotes', () => {
-                const input = 'a,b,"""c"""';
-                const expected = [['a', 'b', '"""c"""']];
-                const actual = new Parser().parse(input).data;
-                assert.deepStrictEqual(actual, expected);
-            });
-
-
-        });
-
-        suite('Serialize', () => {
-
-            test('should serialize a 2D array of strings with a single cell that has quotes', () => {
-                const input = [['"a"']];
-                const expected = '"a"';
-                const actual = new Parser().serialize(input);
-                assert.deepStrictEqual(actual, expected);
-            });
-
-            test('should serialize a 2D array of strings with cells that have quotes', () => {
-                const input = [['"a"', '"b"', '"c"'], ['"d"', '"e"', '"f"'], ['"g"', '"h"', '"i"']];
-                const expected = '"a","b","c"\n"d","e","f"\n"g","h","i"';
-                const actual = new Parser().serialize(input);
-                assert.deepStrictEqual(actual, expected);
-            });
-
-            test('should serialize a 2D array of strings with delimiter included', () => {
-                const input = [['a', 'b', 'c,d']];
-                const expected = 'a,b,"c,d"';
-                const actual = new Parser().serialize(input);
-                assert.deepStrictEqual(actual, expected);
-            });
-
-            test('should serialize a 2D array of strings with quotes and empty columns', () => {
-                const input = [['a', 'b', '""', 'd']];
-                const expected = 'a,b,"",d';
-                const actual = new Parser().serialize(input);
-                assert.deepStrictEqual(actual, expected);
-            });
-
-            // TODO
-            test.skip('should serialize a 2D array of strings with quotes around newlines', () => {
-                const input = [['a', 'b', 'c\nd']];
-                const expected = 'a,b,"c\nd"';
-                const actual = new Parser().serialize(input);
-                assert.deepStrictEqual(actual, expected);
-            });
-
-            test('should serialize a 2D array of strings with quotes around quotes', () => {
-                const input = [['a', 'b', '"""c"""']];
-                const expected = 'a,b,"""c"""';
-                const actual = new Parser().serialize(input);
                 assert.deepStrictEqual(actual, expected);
             });
 
