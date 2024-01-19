@@ -81,6 +81,18 @@ export abstract class _Parser<Cell extends ViableCellTypes = string> {
     }
 
     /**
+     * Perform a callback on each cell in the data
+     * @param callback The callback to call for each cell
+     */
+    forEachCell(callback: (cell: Cell, row: number, column: number) => void): void {
+        this.data.forEach((row, rowIndex) => {
+            row.forEach((cell, columnIndex) => {
+                callback(cell, rowIndex, columnIndex);
+            });
+        });
+    }
+
+    /**
      * Parses a line into an array of cells
      * @param line The line to parse into an array of cells
      * @param lineNumber The line number of the line being parsed

@@ -55,10 +55,8 @@ export class DocumentSemanticTokensProvider implements vscode.DocumentSemanticTo
         const csv = this.parser.parse(document.getText());
         // Build the semantic tokens
         const builder = new vscode.SemanticTokensBuilder();
-        csv.data.forEach((row) => {
-            row.forEach((cell, columnNumber) => {
-                builder.push(cell.line, cell.column, cell.columnEnd - cell.column, columnNumber);
-            });
+        csv.forEachCell((cell, rowNumber, columnNumber) => {
+            builder.push(cell.line, cell.column, cell.columnEnd - cell.column, columnNumber);
         });
         // Return the semantic tokens
         return builder.build();
