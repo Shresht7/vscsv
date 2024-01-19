@@ -1,68 +1,94 @@
-// Library
-import { _Parser, ParserConstructorOptions } from './_base';
+// -------
+// _PARSER
+// -------
 
-// -------------
-// SIMPLE PARSER
-// -------------
+/** A cell can be a string or an interface that implements the `toString` method */
+type ViableCellTypes = string | { toString: () => string };
 
-/** The most basic implementation of the {@link _Parser} class */
-export class SimpleParser extends _Parser<string> {
+/** Parses a string into a 2D array using the given delimiter */
+export abstract class _Parser<Cell extends ViableCellTypes = string> {
 
-    /**
-     * Instantiates a new {@link SimpleParser}
-     * @param opts The options for the {@link SimpleParser} class
-     */
-    constructor(opts?: Partial<ParserConstructorOptions>) {
-        super(opts);
-    }
+    // PROPERTIES
+    // ----------
 
-    protected parseCell(value: string): string {
-        return value;
-    }
+    /** The 2D array of data */
+    public data: Cell[][] = [];
 
-    protected parseLine(line: string): string[] {
-        return line.split(this.delimiter);
-    }
+    /** The delimiter to use */
+    protected readonly delimiter: string;
 
-    protected serializeCell(value: string): string {
-        return value;
-    }
+    /** The string to parse */
+    protected readonly doc: string;
 
-    protected serializeLine(cells: string[]): string {
-        return cells.join(this.delimiter);
-    }
-
-}
-
-// ------
-// PARSER
-// ------
-
-/**
- * A slightly more advanced implementation of the {@link _Parser} class
- * that supports quoted strings.
- */
-export class Parser<T = string> extends _Parser<T> {
+    // CONSTRUCTOR
+    // -----------
 
     /**
-     * Instantiates a new {@link Parser}
-     * @param opts The options for the {@link Parser} class
+     * Instantiates a new {@link _Parser}
+     * @param opts The options for the {@link _Parser} class
      */
-    constructor(opts?: Partial<ParserConstructorOptions>) {
-        super(opts);
+    constructor(opts?: {
+        /** The delimiter to use (default: `,`) */
+        delimiter?: string,
+        /** The string to parse */
+        doc?: string
+    }) {
+        this.delimiter = opts?.delimiter ?? ",";
+        this.doc = opts?.doc ?? "";
+        this.parse();
     }
 
-    protected parseCell(value: string, columnNumber?: number, lineNumber?: number): T {
-        return value as unknown as T;
+    // ABSTRACT METHODS
+    // ----------------
+
+    /**
+    * Parses a string value into a cell
+    * @param value The value to parse into a cell
+    * @param columnNumber The column number of the cell being parsed
+    * @param lineNumber The line number of the cell being parsed
+    */
+    protected abstract parseCell(value: string, columnNumber?: number, lineNumber?: number): Cell;
+
+    // GETTERS & SETTERS
+    // -----------------
+
+    /** The column headers. The first row of the data */
+    get headers(): Cell[] {
+        return this.data[0];
     }
 
-    protected serializeCell(value: T): string {
-        return value as unknown as string;
+    // METHODS
+    // -------
+
+    /** Get the row at the given index */
+    getRow(index: number): Cell[] | undefined {
+        return this.data.at(index);
     }
 
-    protected parseLine(line: string, lineNumber?: number): T[] {
+    /** Get the column at the given index */
+    getColumn(index: number): (Cell | undefined)[] {
+        return this.data.map(row => row.at(index));
+    }
+
+    /**
+     * Gets the value of a cell
+     * @param row The row index of the cell
+     * @param column The column index of the cell
+     * @returns The value of the cell
+     */
+    getCell(row: number, column: number): Cell | undefined {
+        return this.data.at(row)?.at(column);
+    }
+
+    /**
+     * Parses a line into an array of cells
+     * @param line The line to parse into an array of cells
+     * @param lineNumber The line number of the line being parsed
+     * @see {@link ViableCellTypes}
+     */
+    protected parseLine(line: string, lineNumber?: number): Cell[] {
         /** The cells of the line */
-        const cells: T[] = [];
+        const cells: Cell[] = [];
 
         /** Whether or not the current character is inside of a quoted string */
         let isQuoted = false;
@@ -90,7 +116,7 @@ export class Parser<T = string> extends _Parser<T> {
             if (char === this.delimiter && !isQuoted) {
                 // If the current character is the delimiter and the `isQuoted` flag
                 // is not set, push the current cell to the `cells` array and reset the `cell` variable
-                cells.push(this.parseCell(cell));
+                cells.push(this.parseCell(cell, cells.length, lineNumber));
                 cell = "";
                 continue;
             } else {
@@ -104,19 +130,69 @@ export class Parser<T = string> extends _Parser<T> {
         // If there is remnant data in the `cell` variable,
         // push it to the `cells` array as the last cell
         if (cell) {
-            cells.push(this.parseCell(cell));
+            cells.push(this.parseCell(cell, cells.length, lineNumber));
         }
 
         // Return the cells parsed from the line
         return cells;
     }
 
-    protected serializeLine(cells: T[]): string {
-        return cells.map((c) => {
-            const cell = this.serializeCell(c);
+    /**
+     * Parses the document into a 2D array of {@link ViableCellTypes | cells}
+     * @param doc The document to parse. (can be omitted if the document was passed in the constructor)
+     */
+    public parse(doc: string = this.doc): this {
+        // Clear the data
+        this.data = [];
+
+        // Split the document into an array of lines
+        const lines = doc.split(/\r?\n/);
+
+        // Iterate over each line and collect the cells
+        for (let l = 0; l < lines.length; l++) {
+            const cells: Cell[] = this.parseLine(lines[l], l);
+            this.data.push(cells);
+        }
+
+        // Return this instance
+        return this;
+    }
+
+    /**
+     * Serializes a row of cells into a string
+     * @param row The array of {@link ViableCellTypes | cells} to serialize into a string
+     */
+    protected serializeLine(row: Cell[]): string {
+        return row.map((c) => {
+            const cell = c.toString();
             const needsQuoting = cell.includes(this.delimiter) || cell.includes('\\');
             return needsQuoting ? `"${cell}"` : cell;
         }).join(this.delimiter);
+    }
+
+    /**
+     * Serializes the data into a string
+     * @param data The data to serialize to a string. Must be a 2-Dimensional array of {@link ViableCellTypes}s
+     */
+    public serialize(data: Cell[][] = this.data): string {
+        return data.map(row => this.serializeLine(row)).join("\n");
+    }
+
+}
+
+// ------
+// PARSER
+// ------
+
+/**
+ * The most basic implementation of the {@link _Parser} class
+ * 
+ * The {@link ViableCellTypes | cell}s are simply strings.
+ */
+export class Parser extends _Parser<string> {
+
+    protected parseCell(value: string): string {
+        return value;
     }
 
 }
