@@ -1,7 +1,6 @@
 // Library
 import * as assert from 'node:assert';
-import { Parser } from '../../library/classes';
-import { CSV } from '../../library';
+import { CSV, Parser } from '../../library';
 
 // =======
 // PARSERS
@@ -60,7 +59,7 @@ suite('Parser', () => {
 
             test('should parse a CSV string with empty lines', () => {
                 const input = 'a,b,c\n\n1,2,3';
-                const expected = [['a', 'b', 'c'], [], ['1', '2', '3']];
+                const expected = [['a', 'b', 'c'], [''], ['1', '2', '3']];
                 const actual = new Parser().parse(input).data;
                 assert.deepStrictEqual(actual, expected);
             });
@@ -74,7 +73,7 @@ suite('Parser', () => {
 
             test('should parse a empty CSV string', () => {
                 const input = '';
-                const expected = [[]];
+                const expected = [['']];
                 const actual = new Parser().parse(input).data;
                 assert.deepStrictEqual(actual, expected);
             });
@@ -301,6 +300,14 @@ suite('Parser', () => {
                 const input = 'a,b,c\n1,2,3\nx,y,z';
                 const expected = undefined;
                 const actual = new Parser().parse(input).getCell(10, 10);
+                assert.deepStrictEqual(actual, expected);
+            });
+
+            test('should return each cell using forEachCell', () => {
+                const input = 'a,b,c\n1,2,3\nx,y,z';
+                const expected = ['a', 'b', 'c', '1', '2', '3', 'x', 'y', 'z'];
+                const actual: string[] = [];
+                new Parser().parse(input).forEachCell(cell => actual.push(cell));
                 assert.deepStrictEqual(actual, expected);
             });
 
