@@ -2,43 +2,65 @@
 import * as vscode from 'vscode';
 import { VSCSV } from './library';
 
-const CSV = new VSCSV();
-
 // ---------
 // HIGHLIGHT
 // ---------
 
-const tokenTypesLegend = [
-    'nonexistent', // The first column is styled as regular text (not an actual token)
-    'comment', 'string', 'keyword', 'number', 'regexp', 'operator', 'namespace',
-    'type', 'struct', 'class', 'interface', 'enum', 'typeParameter', 'function',
-    'method', 'decorator', 'macro', 'variable', 'parameter', 'property', 'label'
-];
+/** A semantic tokens provider for the CSV language to provide syntax highlighting. */
+export class DocumentSemanticTokensProvider implements vscode.DocumentSemanticTokensProvider {
 
-const legend = new vscode.SemanticTokensLegend(tokenTypesLegend);
+    // STATIC
+    // ------
 
+    /** The disposable used to unregister this provider */
+    private static disposable: vscode.Disposable;
 
-/**
- * Initialize the semantic tokens provider for the CSV language to provide syntax highlighting.
- * @param context The vscode extension context (see {@linkcode vscode.ExtensionContext})
- */
-export function initialize(context: vscode.ExtensionContext) {
-    context.subscriptions.push(vscode.languages.registerDocumentSemanticTokensProvider(
-        { language: 'csv' },
-        new DocumentSemanticTokensProvider(),
-        legend
-    ));
-}
+    /** The semantic tokens legend used to map token types to colors and styles */
+    private static legend = new vscode.SemanticTokensLegend([
+        'nonexistent', // The first column is styled as regular text (not an actual token)
+        'comment', 'string', 'keyword', 'number', 'regexp', 'operator', 'namespace',
+        'type', 'struct', 'class', 'interface', 'enum', 'typeParameter', 'function',
+        'method', 'decorator', 'macro', 'variable', 'parameter', 'property', 'label'
+    ]);
 
-class DocumentSemanticTokensProvider implements vscode.DocumentSemanticTokensProvider {
+    /**
+    * Initialize the semantic tokens provider for the CSV language to provide syntax highlighting.
+    * @param context The vscode extension context (see {@linkcode vscode.ExtensionContext})
+    */
+    public static initialize(context: vscode.ExtensionContext) {
+        this.dispose(); // Dispose of any existing provider
+        // Register the semantic tokens provider for the CSV language to provide syntax highlighting
+        this.disposable = vscode.languages.registerDocumentSemanticTokensProvider(
+            { language: 'csv' },
+            new DocumentSemanticTokensProvider(),
+            this.legend
+        );
+        // Register the disposable to dispose of the provider when the extension is deactivated
+        context.subscriptions.push(this.disposable);
+    }
+
+    /** Dispose of the semantic tokens provider */
+    public static dispose() {
+        this.disposable?.dispose();
+    }
+
+    // INSTANCE
+    // --------
+
+    /** The parser used to parse the CSV document */
+    private parser = new VSCSV();
+
     async provideDocumentSemanticTokens(document: vscode.TextDocument, token: vscode.CancellationToken): Promise<vscode.SemanticTokens> {
-        const csv = CSV.parse(document.getText());
+        // Parse the CSV document
+        const csv = this.parser.parse(document.getText());
+        // Build the semantic tokens
         const builder = new vscode.SemanticTokensBuilder();
         csv.data.forEach((row) => {
             row.forEach((cell, columnNumber) => {
                 builder.push(cell.line, cell.column, cell.columnEnd - cell.column, columnNumber);
             });
         });
+        // Return the semantic tokens
         return builder.build();
     }
 }
