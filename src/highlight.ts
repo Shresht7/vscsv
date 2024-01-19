@@ -1,5 +1,8 @@
 // Library
 import * as vscode from 'vscode';
+import { VSCSV } from './library';
+
+const CSV = new VSCSV();
 
 // ---------
 // HIGHLIGHT
@@ -32,6 +35,40 @@ export function initialize(context: vscode.ExtensionContext) {
 
 }
 
+/** A collection of legible colors to be used for highlighting */
+const colors = [
+    "red",
+    "blue",
+    "green",
+    "yellow",
+    "orange",
+    "purple",
+];
+
 function applyHighlights(document: vscode.TextDocument) {
-    console.log('Applying highlights to CSV file');
+
+    const vscsv = CSV.parse(document.getText());
+
+    vscsv.headers.forEach((header, idx) => {
+
+        const decorationType = vscode.window.createTextEditorDecorationType({
+            color: colors[idx % colors.length]
+        });
+
+        const ranges: vscode.Range[] = [];
+        vscsv.getColumn(idx).forEach((cell) => {
+            if (!cell) { return; }
+            const range = new vscode.Range(
+                cell.line,
+                cell.column,
+                cell.line,
+                cell.columnEnd,
+            );
+            ranges.push(range);
+        });
+
+        vscode.window.activeTextEditor?.setDecorations(decorationType, ranges);
+
+    });
+
 }
