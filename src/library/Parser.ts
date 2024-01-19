@@ -95,9 +95,10 @@ export abstract class _Parser<Cell extends ViableCellTypes = string> {
 
         /** The current cell */
         let cell = "";
+        let columnNumber = 0;
 
         // Iterate through each character in the line ...
-        for (let i = 0; i < line.length; i++) {
+        for (let i = 0; i <= line.length; i++) {
 
             /** The current character */
             const char = line[i];
@@ -113,10 +114,11 @@ export abstract class _Parser<Cell extends ViableCellTypes = string> {
                 isQuoted = !isQuoted;
             }
 
-            if (char === this.delimiter && !isQuoted) {
+            if ((char === this.delimiter && !isQuoted) || (i === line.length)) {
                 // If the current character is the delimiter and the `isQuoted` flag
                 // is not set, push the current cell to the `cells` array and reset the `cell` variable
-                cells.push(this.parseCell(cell, cells.length, lineNumber));
+                cells.push(this.parseCell(cell, columnNumber, lineNumber));
+                columnNumber = i + 1; // The next column starts after the delimiter
                 cell = "";
                 continue;
             } else {
@@ -125,12 +127,6 @@ export abstract class _Parser<Cell extends ViableCellTypes = string> {
                 continue;
             }
 
-        }
-
-        // If there is remnant data in the `cell` variable,
-        // push it to the `cells` array as the last cell
-        if (cell) {
-            cells.push(this.parseCell(cell, cells.length, lineNumber));
         }
 
         // Return the cells parsed from the line
