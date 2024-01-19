@@ -14,12 +14,7 @@ const tokenTypesLegend = [
     'method', 'decorator', 'macro', 'variable', 'parameter', 'property', 'label'
 ];
 
-const tokenModifiersLegend = [
-    'declaration', 'documentation', 'readonly', 'static', 'abstract', 'deprecated',
-    'modification', 'async'
-];
-
-const legend = new vscode.SemanticTokensLegend(tokenTypesLegend, tokenModifiersLegend);
+const legend = new vscode.SemanticTokensLegend(tokenTypesLegend);
 
 
 /**
@@ -40,7 +35,7 @@ class DocumentSemanticTokensProvider implements vscode.DocumentSemanticTokensPro
         const builder = new vscode.SemanticTokensBuilder();
         csv.data.forEach((row) => {
             row.forEach((cell, columnNumber) => {
-                builder.push(cell.line, cell.column, cell.columnEnd - cell.column, columnNumber, columnNumber);
+                builder.push(cell.line, cell.column, cell.columnEnd - cell.column, columnNumber);
             });
         });
         return builder.build();
