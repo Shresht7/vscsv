@@ -112,9 +112,9 @@ suite('Parser', () => {
             });
 
             test('should serialize a string with a different delimiter', () => {
-                const input = 'a;b;c\n1;2;3\nx;y;z';
-                const expected = [['a', 'b', 'c'], ['1', '2', '3'], ['x', 'y', 'z']];
-                const actual = new Parser({ delimiter: ';' }).parse(input).data;
+                const input = [['a', 'b', 'c'], ['1', '2', '3'], ['x', 'y', 'z']];
+                const expected = 'a;b;c\n1;2;3\nx;y;z';
+                const actual = new Parser({ delimiter: ';' }).serialize(input);
                 assert.deepStrictEqual(actual, expected);
             });
 
