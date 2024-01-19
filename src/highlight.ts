@@ -9,6 +9,7 @@ const CSV = new VSCSV();
 // ---------
 
 const tokenTypesLegend = [
+    'nonexistent', // The first column is styled as regular text (not an actual token)
     'comment', 'string', 'keyword', 'number', 'regexp', 'operator', 'namespace',
     'type', 'struct', 'class', 'interface', 'enum', 'typeParameter', 'function',
     'method', 'decorator', 'macro', 'variable', 'parameter', 'property', 'label'
