@@ -8,67 +8,41 @@ const CSV = new VSCSV();
 // HIGHLIGHT
 // ---------
 
-export function initialize(context: vscode.ExtensionContext) {
-
-    if (vscode.window.activeTextEditor?.document) {
-        const document = vscode.window.activeTextEditor.document;
-        if (document.languageId === 'csv') {
-            applyHighlights(document);
-        }
-    }
-
-    // Subscribe to events
-    context.subscriptions.push(
-        // Apply highlights when the active text editor changes to a CSV file
-        vscode.window.onDidChangeActiveTextEditor((editor) => {
-            if (editor?.document.languageId === 'csv') {
-                applyHighlights(editor.document);
-            }
-        }),
-        // Apply highlights when the active text editor's document changes
-        vscode.workspace.onDidChangeTextDocument((event) => {
-            if (event.document.languageId === 'csv') {
-                applyHighlights(event.document);
-            }
-        }),
-    );
-
-}
-
-/** A collection of legible colors to be used for highlighting */
-const colors = [
-    "red",
-    "blue",
-    "green",
-    "yellow",
-    "orange",
-    "purple",
+const tokenTypesLegend = [
+    'comment', 'string', 'keyword', 'number', 'regexp', 'operator', 'namespace',
+    'type', 'struct', 'class', 'interface', 'enum', 'typeParameter', 'function',
+    'method', 'decorator', 'macro', 'variable', 'parameter', 'property', 'label'
 ];
 
-function applyHighlights(document: vscode.TextDocument) {
+const tokenModifiersLegend = [
+    'declaration', 'documentation', 'readonly', 'static', 'abstract', 'deprecated',
+    'modification', 'async'
+];
 
-    const vscsv = CSV.parse(document.getText());
+const legend = new vscode.SemanticTokensLegend(tokenTypesLegend, tokenModifiersLegend);
 
-    vscsv.headers.forEach((header, idx) => {
 
-        const decorationType = vscode.window.createTextEditorDecorationType({
-            color: colors[idx % colors.length]
+/**
+ * Initialize the semantic tokens provider for the CSV language to provide syntax highlighting.
+ * @param context The vscode extension context (see {@linkcode vscode.ExtensionContext})
+ */
+export function initialize(context: vscode.ExtensionContext) {
+    context.subscriptions.push(vscode.languages.registerDocumentSemanticTokensProvider(
+        { language: 'csv' },
+        new DocumentSemanticTokensProvider(),
+        legend
+    ));
+}
+
+class DocumentSemanticTokensProvider implements vscode.DocumentSemanticTokensProvider {
+    async provideDocumentSemanticTokens(document: vscode.TextDocument, token: vscode.CancellationToken): Promise<vscode.SemanticTokens> {
+        const csv = CSV.parse(document.getText());
+        const builder = new vscode.SemanticTokensBuilder();
+        csv.data.forEach((row) => {
+            row.forEach((cell, columnNumber) => {
+                builder.push(cell.line, cell.column, cell.columnEnd - cell.column, columnNumber, columnNumber);
+            });
         });
-
-        const ranges: vscode.Range[] = [];
-        vscsv.getColumn(idx).forEach((cell) => {
-            if (!cell) { return; }
-            const range = new vscode.Range(
-                cell.line,
-                cell.column,
-                cell.line,
-                cell.columnEnd,
-            );
-            ranges.push(range);
-        });
-
-        vscode.window.activeTextEditor?.setDecorations(decorationType, ranges);
-
-    });
-
+        return builder.build();
+    }
 }
