@@ -171,7 +171,7 @@ suite('Parser', () => {
                 assert.deepStrictEqual(actual, expected);
             });
 
-            test('should return undefined with an out of bounds index', () => {
+            test('should return undefined row with an out of bounds index', () => {
                 const input = 'a,b,c\n1,2,3\nx,y,z';
                 const expected = undefined;
                 const actual = new Parser().parse(input).getRow(10);
@@ -198,6 +198,28 @@ suite('Parser', () => {
                 const actual = new Parser().parse(input).getColumn(10);
                 assert.deepStrictEqual(actual, expected);
             });
+
+            test('should be able to get a cell', () => {
+                const input = 'a,b,c\n1,2,3\nx,y,z';
+                const expected = '2';
+                const actual = new Parser().parse(input).getCell(1, 1);
+                assert.deepStrictEqual(actual, expected);
+            });
+
+            test('should be able to get a cell with negative indices', () => {
+                const input = 'a,b,c\n1,2,3\nx,y,z';
+                const expected = 'z';
+                const actual = new Parser().parse(input).getCell(-1, -1);
+                assert.deepStrictEqual(actual, expected);
+            });
+
+            test('should return undefined cell with an out of bounds index', () => {
+                const input = 'a,b,c\n1,2,3\nx,y,z';
+                const expected = undefined;
+                const actual = new Parser().parse(input).getCell(10, 10);
+                assert.deepStrictEqual(actual, expected);
+            });
+
         });
 
     });

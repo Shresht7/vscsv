@@ -46,6 +46,17 @@ export abstract class _Parser<T> {
     getColumn(index: number): (T | undefined)[] {
         return this.data.map(row => row.at(index));
     }
+
+    /**
+     * Gets the value of a cell
+     * @param row The row index of the cell
+     * @param column The column index of the cell
+     * @returns The value of the cell
+     */
+    getCell(row: number, column: number): T | undefined {
+        return this.data.at(row)?.at(column);
+    }
+
     /**
      * Parses a line into an array of cells
      * @param line The line to parse into an array of cells
