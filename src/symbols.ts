@@ -45,7 +45,13 @@ export class DocumentSymbolProvider implements vscode.DocumentSymbolProvider {
     ): vscode.ProviderResult<vscode.SymbolInformation[] | vscode.DocumentSymbol[]> {
 
         // Initialize the symbols array
-        const symbols: vscode.DocumentSymbol[] = [];
+        const symbols: vscode.DocumentSymbol = new vscode.DocumentSymbol(
+            document.fileName,
+            document.languageId,
+            vscode.SymbolKind.File,
+            new vscode.Range(0, 0, document.lineCount, Number.MAX_VALUE),
+            new vscode.Range(0, 0, document.lineCount, Number.MAX_VALUE),
+        );
 
         // Parse the CSV document
         const csv = this.parser.parse(document.getText());
@@ -75,7 +81,7 @@ export class DocumentSymbolProvider implements vscode.DocumentSymbolProvider {
                 const symbol = new vscode.DocumentSymbol(
                     r + ":" + c + " " + csv.headers[c].value + ": " + cell.value,
                     csv.headers[c].value || cell.value,
-                    vscode.SymbolKind.Field,
+                    vscode.SymbolKind.String,
                     range,
                     range,
                 );
@@ -83,11 +89,11 @@ export class DocumentSymbolProvider implements vscode.DocumentSymbolProvider {
             }
 
             // Add the row symbol to the symbols array
-            symbols.push(rowSymbols);
+            symbols.children.push(rowSymbols);
         }
 
         // Return the symbols array
-        return symbols;
+        return [symbols];
     }
 
 }
