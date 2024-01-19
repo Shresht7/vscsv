@@ -17,7 +17,7 @@ export class DocumentSemanticTokensProvider implements vscode.DocumentSemanticTo
 
     /** The semantic tokens legend used to map token types to colors and styles */
     private static legend = new vscode.SemanticTokensLegend(shuffle([
-        'nonexistent', // The first column is styled as regular text (not an actual token)
+        'nonexistent', // A nonexistent token to style as regular text
         'string', 'number', 'regexp', 'operator', 'keyword', 'namespace', 'comment',
         'type', 'struct', 'class', 'interface', 'enum', 'typeParameter', 'function',
         'method', 'decorator', 'macro', 'variable', 'parameter', 'property', 'label'
