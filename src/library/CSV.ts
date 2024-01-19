@@ -9,7 +9,7 @@ import { Parser } from "./classes";
 export class CSV {
 
     /** The static instantiation of the {@link Parser} */
-    private static _parser: Parser = new Parser(",");
+    private static _parser: Parser = new Parser({ delimiter: "," });
 
     private constructor() { }
 
@@ -19,7 +19,7 @@ export class CSV {
      * @returns A 2D array of strings
      */
     public static parse(doc: string): string[][] {
-        return this._parser.parse(doc);
+        return this._parser.parse(doc).data;
     }
 
     /**

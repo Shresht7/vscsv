@@ -1,5 +1,5 @@
 // Library
-import { _Parser } from './_base';
+import { _Parser, ParserConstructorOptions } from './_base';
 
 // ------
 // PARSER
@@ -10,10 +10,10 @@ export class Parser extends _Parser<string> {
 
     /**
      * Instantiates a new {@link Parser}
-     * @param delimiter The delimiter to use (default: `,`)
+     * @param opts The options for the {@link Parser} class
      */
-    constructor(delimiter: string = ",") {
-        super(delimiter);
+    constructor(opts?: Partial<ParserConstructorOptions>) {
+        super(opts);
     }
 
     protected parseLine(line: string): string[] {

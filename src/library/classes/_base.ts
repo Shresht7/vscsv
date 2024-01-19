@@ -2,19 +2,35 @@
 // _PARSER
 // -------
 
+/** The options for the {@link _Parser} class */
+export type ParserConstructorOptions = {
+    /** The delimiter to use (default: `,`) */
+    delimiter?: string,
+    /** The string to parse */
+    doc?: string
+};
+
 /** Parses a string into a 2D array using the given delimiter */
 export abstract class _Parser<T> {
 
     /** The 2D array of data */
-    private readonly data: T[][] = [];
+    public data: T[][] = [];
+
+    /** The delimiter to use */
+    protected readonly delimiter: string;
+
+    /** The string to parse */
+    protected readonly doc: string;
 
     /**
      * Instantiates a new {@link _Parser}
-     * @param delimiter The delimiter to use (default: `,`)
+     * @param opts The options for the {@link _Parser} class
      */
-    constructor(
-        protected readonly delimiter: string = ","
-    ) { }
+    constructor(opts?: Partial<ParserConstructorOptions>) {
+        this.delimiter = opts?.delimiter ?? ",";
+        this.doc = opts?.doc ?? "";
+        this.parse();
+    }
 
     /** The column headers. The first row of the data */
     get headers(): T[] {
@@ -31,8 +47,12 @@ export abstract class _Parser<T> {
     /**
      * Parses a string into a 2D array using the given delimiter
      * @param doc The string to parse
+     * @returns This {@link _Parser} instance
      */
-    public parse(doc: string): T[][] {
+    public parse(doc: string = this.doc): this {
+        // Clear the data
+        this.data = [];
+
         // Split the document into an array of lines
         const lines = doc.split(/\r?\n/);
 
@@ -42,8 +62,8 @@ export abstract class _Parser<T> {
             this.data.push(cells);
         }
 
-        // Return the results
-        return this.data;
+        // Return this instance
+        return this;
     }
 
     /**
