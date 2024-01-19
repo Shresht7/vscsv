@@ -1,7 +1,6 @@
 // Library
 import * as assert from 'node:assert';
-import { Parser } from '../../library/classes';
-import { CSV } from '../../library';
+import { CSV, Parser } from '../../library';
 
 // =======
 // PARSERS
