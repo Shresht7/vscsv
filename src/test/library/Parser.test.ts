@@ -107,10 +107,9 @@ suite('Parser', () => {
                 assert.deepStrictEqual(actual, expected);
             });
 
-            // TODO
-            test.skip('should parse a CSV string with quotes around newlines', () => {
-                const input = 'a,b,"c\nd"';
-                const expected = [['a', 'b', 'c\nd']];
+            test('should parse a CSV string with quotes around newlines', () => {
+                const input = 'a,b,"c\\\\nd"';
+                const expected = [['a', 'b', '"c\\nd"']];
                 const actual = new Parser().parse(input).data;
                 assert.deepStrictEqual(actual, expected);
             });
@@ -210,10 +209,9 @@ suite('Parser', () => {
                 assert.deepStrictEqual(actual, expected);
             });
 
-            // TODO
-            test.skip('should serialize a 2D array of strings with quotes around newlines', () => {
-                const input = [['a', 'b', 'c\nd']];
-                const expected = 'a,b,"c\nd"';
+            test('should serialize a 2D array of strings with quotes around newlines', () => {
+                const input = [['a', 'b', 'c\\nd']];
+                const expected = 'a,b,"c\\nd"';
                 const actual = new Parser().serialize(input);
                 assert.deepStrictEqual(actual, expected);
             });

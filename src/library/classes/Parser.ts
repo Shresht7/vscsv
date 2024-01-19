@@ -60,6 +60,12 @@ export class Parser extends _Parser<string> {
             /** The current character */
             const char = line[i];
 
+            if (char === "\\") {
+                // If the current character is a backslash, skip it and collect the next character
+                cell += line[++i];
+                continue;
+            }
+
             if (char === '"') {
                 // If the current character is a quote, toggle the `isQuoted` flag
                 isQuoted = !isQuoted;
@@ -91,8 +97,8 @@ export class Parser extends _Parser<string> {
 
     protected serializeLine(cells: string[]): string {
         return cells.map((cell) => {
-            const hasDelimiter = cell.includes(this.delimiter);
-            return hasDelimiter ? `"${cell}"` : cell;
+            const needsQuoting = cell.includes(this.delimiter) || cell.includes('\\');
+            return needsQuoting ? `"${cell}"` : cell;
         }).join(this.delimiter);
     }
 
