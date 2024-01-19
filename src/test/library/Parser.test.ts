@@ -157,6 +157,26 @@ suite('Parser', () => {
                 assert.deepStrictEqual(actual, expected);
             });
 
+            test('should be able to get a row', () => {
+                const input = 'a,b,c\n1,2,3\nx,y,z';
+                const expected = ['1', '2', '3'];
+                const actual = new Parser().parse(input).getRow(1);
+                assert.deepStrictEqual(actual, expected);
+            });
+
+            test('should be able to get a row with a negative index', () => {
+                const input = 'a,b,c\n1,2,3\nx,y,z';
+                const expected = ['x', 'y', 'z'];
+                const actual = new Parser().parse(input).getRow(-1);
+                assert.deepStrictEqual(actual, expected);
+            });
+
+            test('should return undefined with an out of bounds index', () => {
+                const input = 'a,b,c\n1,2,3\nx,y,z';
+                const expected = undefined;
+                const actual = new Parser().parse(input).getRow(10);
+                assert.deepStrictEqual(actual, expected);
+            });
         });
 
     });

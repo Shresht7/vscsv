@@ -37,6 +37,10 @@ export abstract class _Parser<T> {
         return this.data[0];
     }
 
+    /** Get the row at the given index */
+    getRow(index: number): T[] | undefined {
+        return this.data.at(index);
+    }
     /**
      * Parses a line into an array of cells
      * @param line The line to parse into an array of cells
