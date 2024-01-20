@@ -53,22 +53,13 @@ export class DocumentSymbolProvider implements vscode.DocumentSymbolProvider {
         token: vscode.CancellationToken
     ): vscode.ProviderResult<vscode.SymbolInformation[] | vscode.DocumentSymbol[]> {
 
-        /** Range of the entire document. Used in the {@linkcode documentSymbol} */
-        const entireRange = new vscode.Range(0, 0, document.lineCount, Number.MAX_VALUE);
-
         /**
          * This {@link vscode.DocumentSymbol | symbol} will be the parent of all other symbols in the document
          * providing a range that spans the entire document. This allows the
          * first row (header row) to remain visible when scrolling through the document.
          * @see {@link vscode.DocumentSymbol}
          */
-        const documentSymbol: vscode.DocumentSymbol = new vscode.DocumentSymbol(
-            document.fileName,
-            document.languageId,
-            vscode.SymbolKind.File,
-            entireRange,
-            entireRange,
-        );
+        const documentSymbol = this.createDocumentSymbol(document);
 
         // Parse the CSV document
         const csv = this.parser.parse(document.getText());
@@ -111,6 +102,22 @@ export class DocumentSymbolProvider implements vscode.DocumentSymbolProvider {
 
         // Return the symbols
         return [documentSymbol];
+    }
+
+    /** Creates a symbol for the {@link vscode.TextDocument | document} */
+    private createDocumentSymbol(document: vscode.TextDocument): vscode.DocumentSymbol {
+        /** Range of the entire document. Used in the {@linkcode documentSymbol} */
+        const entireRange = new vscode.Range(0, 0, document.lineCount, Number.MAX_VALUE);
+
+        // Create a symbol for the document and return it        
+        const documentSymbol: vscode.DocumentSymbol = new vscode.DocumentSymbol(
+            document.fileName,
+            document.languageId,
+            vscode.SymbolKind.File,
+            entireRange,
+            entireRange,
+        );
+        return documentSymbol;
     }
 
 }
