@@ -38,7 +38,7 @@ export class VSCSV extends _Parser<Cell> {
 /**
  * A cell in a CSV file. Holds information about the cell
  */
-type Cell = {
+export type Cell = {
     /** The value of the cell */
     value: string;
     /** The line number of the cell */
