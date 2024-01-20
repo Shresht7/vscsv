@@ -65,33 +65,31 @@ export class DocumentSymbolProvider implements vscode.DocumentSymbolProvider {
         const csv = this.parser.parse(document.getText());
 
         // Iterate over the rows in the CSV document...
-        for (const r in csv.data) {
-            const row = csv.data[r];
-            if (!row.length) { continue; } // Exit if the row is empty
+        csv.data.forEach((row, r) => {
+            if (!row.length) { return; } // Exit if the row is empty
 
             // Create a symbol for the row
-            const rowSymbol = this.createRowSymbol(document, +r);
+            const rowSymbol = this.createRowSymbol(document, r);
 
             // Iterate over the cells in the row...
-            for (const c in row) {
-                const cell = row[c];
-                if (!cell.value) { continue; } // Exit if the cell is empty
+            row.forEach((cell, c) => {
+                if (!cell.value) { return; } // Exit if the cell is empty
 
                 // Create a symbol for the cell and add it to the row symbol
                 const cellSymbol = this.createCellSymbol(
                     cell.value,
                     cell.range,
-                    +r,
-                    +c,
-                    csv.getHeader(+c)?.value
+                    r,
+                    c,
+                    csv.getHeader(c)?.value
                 );
 
                 rowSymbol.children.push(cellSymbol);
-            }
+            });
 
             // Add the row symbol to the document symbol
             documentSymbol.children.push(rowSymbol);
-        }
+        });
 
         // Return the symbols
         return [documentSymbol];
