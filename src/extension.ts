@@ -1,7 +1,6 @@
 // Library
 import * as vscode from 'vscode';
-import { DocumentSemanticTokensProvider } from './highlight';
-import { DocumentSymbolProvider } from './symbols';
+import { DocumentSemanticTokensProvider, DocumentSymbolProvider } from './providers';
 
 /** This method is called when your extension is activated */
 export function activate(context: vscode.ExtensionContext) {
