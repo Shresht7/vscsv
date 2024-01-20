@@ -1,4 +1,5 @@
 // Library
+import * as vscode from "vscode";
 import { _Parser } from "./Parser";
 
 // -----
@@ -22,6 +23,8 @@ export class VSCSV extends _Parser<Cell> {
             line: lineNumber,
             column: columnNumber,
             columnEnd: columnNumber + value.length,
+            length: value.length,
+            range: new vscode.Range(lineNumber, columnNumber, lineNumber, columnNumber + value.length),
             toString: () => value
         };
     }
@@ -44,6 +47,10 @@ type Cell = {
     column: number;
     /** The column number of the cell's end */
     columnEnd: number;
+    /** The length of the cell */
+    length: number;
+    /** The range of the cell */
+    range: vscode.Range;
     /** Converts the cell into a string */
     toString: () => string;
 };

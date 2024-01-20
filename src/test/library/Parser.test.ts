@@ -311,6 +311,20 @@ suite('Parser', () => {
                 assert.deepStrictEqual(actual, expected);
             });
 
+            test('should return the correct header', () => {
+                const input = 'a,b,c\n1,2,3\nx,y,z';
+                const expected = 'b';
+                const actual = new Parser().parse(input).getHeader(1);
+                assert.deepStrictEqual(actual, expected);
+            });
+
+            test('should return undefined header with an out of bounds index', () => {
+                const input = 'a,b,c\n1,2,3\nx,y,z';
+                const expected = undefined;
+                const actual = new Parser().parse(input).getHeader(10);
+                assert.deepStrictEqual(actual, expected);
+            });
+
         });
 
     });
