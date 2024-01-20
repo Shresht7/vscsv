@@ -11,7 +11,8 @@ export class DocumentSymbolProvider implements vscode.DocumentSymbolProvider {
     // STATIC
     // ------
 
-    /** The disposable used to unregister this provider */
+    /** The document selector for the CSV language */
+    private static selector: vscode.DocumentSelector = { language: 'csv' };
     private static disposable: vscode.Disposable;
 
     /**
