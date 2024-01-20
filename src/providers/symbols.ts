@@ -1,6 +1,6 @@
 // Library
 import * as vscode from 'vscode';
-import { VSCSV } from './library';
+import { VSCSV } from '../library';
 
 // -------
 // SYMBOLS
