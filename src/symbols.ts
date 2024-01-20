@@ -70,14 +70,7 @@ export class DocumentSymbolProvider implements vscode.DocumentSymbolProvider {
             if (!row.length) { continue; } // Exit if the row is empty
 
             // Create a symbol for the row
-            const range = new vscode.Range(+r, 0, +r, Number.MAX_VALUE); // Range of the entire row
-            const rowSymbol: vscode.DocumentSymbol = new vscode.DocumentSymbol(
-                r,
-                document.getText(range),
-                vscode.SymbolKind.Array,
-                range,
-                range,
-            );
+            const rowSymbol = this.createRowSymbol(document, +r);
 
             // Iterate over the cells in the row...
             for (const c in row) {
@@ -118,6 +111,23 @@ export class DocumentSymbolProvider implements vscode.DocumentSymbolProvider {
             entireRange,
         );
         return documentSymbol;
+    }
+
+    /**
+     * Creates a symbol for a row in the CSV document.
+     * @param document The {@link vscode.TextDocument | document} to create the symbol for
+     * @param index The index of the row in the CSV document
+     */
+    private createRowSymbol(document: vscode.TextDocument, index: number): vscode.DocumentSymbol {
+        const range = new vscode.Range(index, 0, index, Number.MAX_VALUE); // Range of the entire row
+        const rowSymbol: vscode.DocumentSymbol = new vscode.DocumentSymbol(
+            index.toString(),
+            document.getText(range),
+            vscode.SymbolKind.Array,
+            range,
+            range,
+        );
+        return rowSymbol;
     }
 
 }
