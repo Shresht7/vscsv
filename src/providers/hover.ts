@@ -79,7 +79,7 @@ export class HoverProvider implements vscode.HoverProvider {
         header = header ? ` (${header})` : '';
         const string = [
             line,
-            `Row: ${row + 1}, Column: ${column + 1}${header}`
+            `Row: \`${row + 1}\`, Column: \`${column + 1}\`${header}`
         ];
         return string.map(s => new vscode.MarkdownString(s));
     }
