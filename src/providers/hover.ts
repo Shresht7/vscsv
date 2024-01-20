@@ -1,6 +1,6 @@
 // Library
 import * as vscode from 'vscode';
-import { VSCSV } from '../library';
+import { Cell, VSCSV } from '../library';
 
 // --------------
 // HOVER PROVIDER
@@ -56,7 +56,7 @@ export class HoverProvider implements vscode.HoverProvider {
 
                 // ...and return a hover if the cell contains the hovered position
                 if (cell.range.contains(position)) {
-                    return new vscode.Hover(`Row: ${+r + 1}, Column: ${+c + 1}`);
+                    return new vscode.Hover(this.determineHoverContents(+r, +c));
                 }
             }
         }
@@ -64,6 +64,17 @@ export class HoverProvider implements vscode.HoverProvider {
         // Return null if no hover is provided
         return null;
 
+    }
+
+    /**
+     * Determines the hover contents for the given row and column
+     * @returns A markdown string or array of markdown strings to display in the hover
+     */
+    determineHoverContents(row: number, column: number): vscode.MarkdownString | (vscode.MarkdownString)[] {
+        const string = [
+            `Row: ${row + 1}, Column: ${column + 1}`
+        ];
+        return string.map(s => new vscode.MarkdownString(s));
     }
 
 }
