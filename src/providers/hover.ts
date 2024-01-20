@@ -1,5 +1,6 @@
 // Library
 import * as vscode from 'vscode';
+import { VSCSV } from '../library';
 
 // --------------
 // HOVER PROVIDER
@@ -38,8 +39,31 @@ export class HoverProvider implements vscode.HoverProvider {
     // INSTANCE
     // --------
 
+    /** The CSV parser */
+    private parser = new VSCSV();
+
     provideHover(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): vscode.ProviderResult<vscode.Hover> {
-        throw new Error('Method not implemented.');
+
+        // Parse the document
+        const csv = this.parser.parse(document.getText());
+
+        // Iterate over the cells in the CSV document...
+        for (const r in csv.data) {
+            for (const c in csv.data[r]) {
+                // ...get the cell...
+                const cell = csv.getCell(+r, +c);
+                if (!cell) { continue; } // Skip empty cells
+
+                // ...and return a hover if the cell contains the hovered position
+                if (cell.range.contains(position)) {
+                    return new vscode.Hover(`Row: ${+r + 1}, Column: ${+c + 1}`);
+                }
+            }
+        }
+
+        // Return null if no hover is provided
+        return null;
+
     }
 
 }
