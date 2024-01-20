@@ -6,6 +6,12 @@ import { VSCSV } from './library';
 // SYMBOLS
 // -------
 
+/**
+ * This class provides document symbol information for the CSV language.
+ * It is used to provide the outline view in the explorer panel and the breadcrumbs.
+ * It also allows the user to make use of the "Go to Symbol" feature.
+ * @see {@link vscode.DocumentSymbolProvider} for more information.
+ */
 export class DocumentSymbolProvider implements vscode.DocumentSymbolProvider {
 
     // STATIC
@@ -13,24 +19,25 @@ export class DocumentSymbolProvider implements vscode.DocumentSymbolProvider {
 
     /** The document selector for the CSV language */
     private static selector: vscode.DocumentSelector = { language: 'csv' };
+
+    /** The disposable used to unregister this provider, when needed */
     private static disposable: vscode.Disposable;
 
     /**
      * Initialize the document symbol provider for the CSV language to provide symbol information.
      * @param context The vscode extension context (see {@linkcode vscode.ExtensionContext})
+     * @see {@link vscode.languages.registerDocumentSymbolProvider}
+     * @see {@link vscode.DocumentSymbolProvider}
      */
     public static initialize(context: vscode.ExtensionContext) {
-        this.dispose(); // Dispose of any existing provider
+        this.disposable?.dispose(); // Dispose of any existing provider
         // Register the document symbol provider for the CSV language to provide symbol information
-        this.disposable = vscode.languages.registerDocumentSymbolProvider(
-            { language: 'csv' },
-            new DocumentSymbolProvider()
-        );
+        this.disposable = vscode.languages.registerDocumentSymbolProvider(this.selector, new DocumentSymbolProvider());
         // Register the disposable to dispose of the provider when the extension is deactivated
         context.subscriptions.push(this.disposable);
     }
 
-    /** Dispose of the document symbol provider */
+    /** Dispose of the document symbol provider. @see {@link vscode.Disposable} */
     public static dispose() {
         this.disposable?.dispose();
     }
@@ -38,6 +45,7 @@ export class DocumentSymbolProvider implements vscode.DocumentSymbolProvider {
     // INSTANCE
     // --------
 
+    /** The CSV parser */
     private parser = new VSCSV();
 
     public provideDocumentSymbols(
@@ -70,9 +78,9 @@ export class DocumentSymbolProvider implements vscode.DocumentSymbolProvider {
             const row = csv.data[r];
             if (!row.length) { continue; } // Exit if the row is empty
 
-            // Create a symbol for the row and add it to the symbols array
-            const range = new vscode.Range(+r, 0, +r, Number.MAX_VALUE);
-            const rowSymbols: vscode.DocumentSymbol = new vscode.DocumentSymbol(
+            // Create a symbol for the row
+            const range = new vscode.Range(+r, 0, +r, Number.MAX_VALUE); // Range of the entire row
+            const rowSymbol: vscode.DocumentSymbol = new vscode.DocumentSymbol(
                 r,
                 document.getText(range),
                 vscode.SymbolKind.Array,
@@ -83,26 +91,26 @@ export class DocumentSymbolProvider implements vscode.DocumentSymbolProvider {
             // Iterate over the cells in the row...
             for (const c in row) {
                 const cell = row[c];
-                if (!cell.value) { continue; }
+                if (!cell.value) { continue; } // Exit if the cell is empty
 
                 // Create a symbol for the cell and add it to the row symbol
                 const range = new vscode.Range(cell.line, cell.column, cell.line, cell.columnEnd);
-                const symbol = new vscode.DocumentSymbol(
+                const cellSymbol = new vscode.DocumentSymbol(
                     r + ":" + c + " " + csv.headers[c].value + ": " + cell.value,
                     csv.headers[c].value || cell.value,
                     vscode.SymbolKind.String,
                     range,
                     range,
                 );
-                rowSymbols.children.push(symbol);
+                rowSymbol.children.push(cellSymbol);
             }
 
-            // Add the row symbol to the symbols array
-            symbols.children.push(rowSymbols);
+            // Add the row symbol to the document symbol
+            documentSymbol.children.push(rowSymbol);
         }
 
-        // Return the symbols array
-        return [symbols];
+        // Return the symbols
+        return [documentSymbol];
     }
 
 }
