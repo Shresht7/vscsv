@@ -45,13 +45,21 @@ export class DocumentSymbolProvider implements vscode.DocumentSymbolProvider {
         token: vscode.CancellationToken
     ): vscode.ProviderResult<vscode.SymbolInformation[] | vscode.DocumentSymbol[]> {
 
-        // Initialize the symbols array
-        const symbols: vscode.DocumentSymbol = new vscode.DocumentSymbol(
+        /** Range of the entire document. Used in the {@linkcode documentSymbol} */
+        const entireRange = new vscode.Range(0, 0, document.lineCount, Number.MAX_VALUE);
+
+        /**
+         * This {@link vscode.DocumentSymbol | symbol} will be the parent of all other symbols in the document
+         * providing a range that spans the entire document. This allows the
+         * first row (header row) to remain visible when scrolling through the document.
+         * @see {@link vscode.DocumentSymbol}
+         */
+        const documentSymbol: vscode.DocumentSymbol = new vscode.DocumentSymbol(
             document.fileName,
             document.languageId,
             vscode.SymbolKind.File,
-            new vscode.Range(0, 0, document.lineCount, Number.MAX_VALUE),
-            new vscode.Range(0, 0, document.lineCount, Number.MAX_VALUE),
+            entireRange,
+            entireRange,
         );
 
         // Parse the CSV document
