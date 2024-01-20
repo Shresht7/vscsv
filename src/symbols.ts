@@ -78,14 +78,14 @@ export class DocumentSymbolProvider implements vscode.DocumentSymbolProvider {
                 if (!cell.value) { continue; } // Exit if the cell is empty
 
                 // Create a symbol for the cell and add it to the row symbol
-                const range = new vscode.Range(cell.line, cell.column, cell.line, cell.columnEnd);
-                const cellSymbol = new vscode.DocumentSymbol(
-                    r + ":" + c + " " + csv.headers[c].value + ": " + cell.value,
-                    csv.headers[c].value || cell.value,
-                    vscode.SymbolKind.String,
-                    range,
-                    range,
+                const cellSymbol = this.createCellSymbol(
+                    cell.value,
+                    cell.range,
+                    +r,
+                    +c,
+                    csv.getHeader(+c)?.value
                 );
+
                 rowSymbol.children.push(cellSymbol);
             }
 
@@ -128,6 +128,26 @@ export class DocumentSymbolProvider implements vscode.DocumentSymbolProvider {
             range,
         );
         return rowSymbol;
+    }
+
+    /**
+     * Creates a symbol for a cell in the CSV document.
+     * @param value The value of the cell
+     * @param range The range of the cell (see {@linkcode vscode.Range})
+     * @param row The row index of the cell
+     * @param column The column index of the cell
+     * @param header The header of the column the cell is in (if any)
+     */
+    private createCellSymbol(value: string, range: vscode.Range, row: number, column: number, header: string = ""): vscode.DocumentSymbol {
+        const nameInfo = header ? value : header + ": " + value;
+        const cellSymbol = new vscode.DocumentSymbol(
+            row + ":" + column + " " + nameInfo,
+            header || value,
+            vscode.SymbolKind.String,
+            range,
+            range,
+        );
+        return cellSymbol;
     }
 
 }
