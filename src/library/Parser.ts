@@ -92,6 +92,11 @@ export abstract class _Parser<Cell extends ViableCellTypes = string> {
         });
     }
 
+    /** @returns the header corresponding to the given column number */
+    getHeader(column: number): Cell | undefined {
+        return this.headers.at(column);
+    }
+
     /**
      * Parses a line into an array of cells
      * @param line The line to parse into an array of cells
