@@ -56,7 +56,12 @@ export class HoverProvider implements vscode.HoverProvider {
 
                 // ...and return a hover if the cell contains the hovered position
                 if (cell.range.contains(position)) {
-                    return new vscode.Hover(this.determineHoverContents(+r, +c));
+                    return new vscode.Hover(this.determineHoverContents(
+                        document.lineAt(+r).text,
+                        +r,
+                        +c,
+                        csv.getHeader(+c)?.value
+                    ));
                 }
             }
         }
@@ -70,9 +75,11 @@ export class HoverProvider implements vscode.HoverProvider {
      * Determines the hover contents for the given row and column
      * @returns A markdown string or array of markdown strings to display in the hover
      */
-    determineHoverContents(row: number, column: number): vscode.MarkdownString | (vscode.MarkdownString)[] {
+    determineHoverContents(line: string, row: number, column: number, header: string = ""): vscode.MarkdownString | (vscode.MarkdownString)[] {
+        header = header ? ` (${header})` : '';
         const string = [
-            `Row: ${row + 1}, Column: ${column + 1}`
+            line,
+            `Row: ${row + 1}, Column: ${column + 1}${header}`
         ];
         return string.map(s => new vscode.MarkdownString(s));
     }
