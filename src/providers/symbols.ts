@@ -18,7 +18,10 @@ export class DocumentSymbolProvider implements vscode.DocumentSymbolProvider {
     // ------
 
     /** The document selector for the CSV language */
-    private static selector: vscode.DocumentSelector = { language: 'csv' };
+    private static selector: vscode.DocumentSelector = [
+        { language: 'csv' },
+        { language: 'tsv' },
+    ];
 
     /** The disposable used to unregister this provider, when needed */
     private static disposable: vscode.Disposable;
@@ -52,6 +55,9 @@ export class DocumentSymbolProvider implements vscode.DocumentSymbolProvider {
         document: vscode.TextDocument,
         token: vscode.CancellationToken
     ): vscode.ProviderResult<vscode.SymbolInformation[] | vscode.DocumentSymbol[]> {
+
+        // Determine the delimiter to use based on the language ID of the document
+        this.parser.determineDelimiter(document);
 
         /**
          * This {@link vscode.DocumentSymbol | symbol} will be the parent of all other symbols in the document
