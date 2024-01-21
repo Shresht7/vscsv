@@ -13,6 +13,12 @@ export class DocumentSemanticTokensProvider implements vscode.DocumentSemanticTo
     // STATIC
     // ------
 
+    /** The document selector for the CSV language */
+    private static selector: vscode.DocumentSelector = [
+        { language: 'csv' },
+        { language: 'tsv' },
+    ];
+
     /** The disposable used to unregister this provider */
     private static disposable: vscode.Disposable;
 
@@ -32,10 +38,7 @@ export class DocumentSemanticTokensProvider implements vscode.DocumentSemanticTo
         this.dispose(); // Dispose of any existing provider
         // Register the semantic tokens provider for the CSV language to provide syntax highlighting
         this.disposable = vscode.languages.registerDocumentSemanticTokensProvider(
-            [
-                { language: 'csv' },
-                { language: 'tsv' },
-            ],
+            this.selector,
             new DocumentSemanticTokensProvider(),
             this.legend
         );
