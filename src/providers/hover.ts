@@ -12,7 +12,10 @@ export class HoverProvider implements vscode.HoverProvider {
     // ------
 
     /** The document selector for the CSV language */
-    private static selector: vscode.DocumentSelector = { language: 'csv' };
+    private static selector: vscode.DocumentSelector = [
+        { language: 'csv' },
+        { language: 'tsv' },
+    ];
 
     /** The disposable used to unregister this provider, when needed */
     private static disposable: vscode.Disposable;
