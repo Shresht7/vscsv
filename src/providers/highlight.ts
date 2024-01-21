@@ -32,7 +32,10 @@ export class DocumentSemanticTokensProvider implements vscode.DocumentSemanticTo
         this.dispose(); // Dispose of any existing provider
         // Register the semantic tokens provider for the CSV language to provide syntax highlighting
         this.disposable = vscode.languages.registerDocumentSemanticTokensProvider(
-            { language: 'csv' },
+            [
+                { language: 'csv' },
+                { language: 'tsv' },
+            ],
             new DocumentSemanticTokensProvider(),
             this.legend
         );
@@ -48,12 +51,31 @@ export class DocumentSemanticTokensProvider implements vscode.DocumentSemanticTo
     // INSTANCE
     // --------
 
+
     /** The parser used to parse the CSV document */
     private parser = new VSCSV();
 
+    /** Determine the delimiter to use based on the language ID of the document */
+    private determineDelimiter(document: vscode.TextDocument): string {
+        switch (document.languageId) {
+            case 'csv':
+                return this.parser.delimiter = ',';
+            case 'tsv':
+                return this.parser.delimiter = '\t';
+            case 'psv':
+                return this.parser.delimiter = '|';
+            default:
+                return this.parser.delimiter;
+        }
+    }
+
     async provideDocumentSemanticTokens(document: vscode.TextDocument, token: vscode.CancellationToken): Promise<vscode.SemanticTokens> {
+        // Determine the delimiter to use
+        this.determineDelimiter(document);
+
         // Parse the CSV document
         const csv = this.parser.parse(document.getText());
+
         // Build the semantic tokens
         const builder = new vscode.SemanticTokensBuilder();
         csv.forEachCell((cell, rowNumber, columnNumber) => {
@@ -66,6 +88,7 @@ export class DocumentSemanticTokensProvider implements vscode.DocumentSemanticTo
                 tokenIndex
             );
         });
+
         // Return the semantic tokens
         return builder.build();
     }

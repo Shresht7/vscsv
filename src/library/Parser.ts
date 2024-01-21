@@ -15,7 +15,7 @@ export abstract class _Parser<Cell extends ViableCellTypes = string> {
     public data: Cell[][] = [];
 
     /** The delimiter to use */
-    protected readonly delimiter: string;
+    public delimiter: string;
 
     /** The string to parse */
     protected readonly doc: string;
