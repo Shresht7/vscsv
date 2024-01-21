@@ -45,23 +45,10 @@ export class HoverProvider implements vscode.HoverProvider {
     /** The CSV parser */
     private parser = new VSCSV();
 
-    private determineDelimiter(document: vscode.TextDocument) {
-        switch (document.languageId) {
-            case 'csv':
-                this.parser.setDelimiter(',');
-                break;
-            case 'tsv':
-                this.parser.setDelimiter('\t');
-                break;
-            default:
-                this.parser.setDelimiter(',');
-        }
-    }
-
     provideHover(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): vscode.ProviderResult<vscode.Hover> {
 
         // Determine the delimiter to use based on the language ID of the document
-        this.determineDelimiter(document);
+        this.parser.determineDelimiter(document);
 
         // Parse the document
         const csv = this.parser.parse(document.getText());

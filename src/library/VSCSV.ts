@@ -17,6 +17,23 @@ import { _Parser } from "./Parser";
  */
 export class VSCSV extends _Parser<Cell> {
 
+    /**
+     * Determines the delimiter to use based on the language ID of the document
+     * @param document The document to use to determine the delimiter
+     */
+    public determineDelimiter(document: vscode.TextDocument) {
+        switch (document.languageId) {
+            case 'csv':
+                this.setDelimiter(',');
+                break;
+            case 'tsv':
+                this.setDelimiter('\t');
+                break;
+            default:
+                this.setDelimiter(',');
+        }
+    }
+
     protected parseCell(value: string, columnNumber: number, lineNumber: number): Cell {
         return {
             value,
