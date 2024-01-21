@@ -30,6 +30,7 @@ export class VSCSV extends _Parser<Cell> {
                 this.setDelimiter('\t');
                 break;
             default:
+                // ? Great place to use configuration settings to set custom delimiters
                 this.setDelimiter(',');
         }
     }
