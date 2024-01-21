@@ -13,6 +13,8 @@ export class Configuration {
     /** Maps the configuration keys to their default values */
     static Settings = {
         enableSyntaxHighlighting: true,
+        enableDocumentSymbols: true,
+        enableHoverInformation: true,
     };
 
     /**

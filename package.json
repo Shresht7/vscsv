@@ -35,6 +35,16 @@
           "type": "boolean",
           "default": true,
           "description": "Enable/disable syntax highlighting in csv/tsv files"
+        },
+        "vscsv.enableDocumentSymbols": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable/disable document symbols in csv/tsv files"
+        },
+        "vscsv.enableHoverInformation": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable/disable hover information in csv/tsv files"
         }
       }
     },
