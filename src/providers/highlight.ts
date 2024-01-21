@@ -56,16 +56,19 @@ export class DocumentSemanticTokensProvider implements vscode.DocumentSemanticTo
     private parser = new VSCSV();
 
     /** Determine the delimiter to use based on the language ID of the document */
-    private determineDelimiter(document: vscode.TextDocument): string {
+    private determineDelimiter(document: vscode.TextDocument) {
         switch (document.languageId) {
             case 'csv':
-                return this.parser.delimiter = ',';
+                this.parser.setDelimiter(',');
+                break;
             case 'tsv':
-                return this.parser.delimiter = '\t';
+                this.parser.setDelimiter('\t');
+                break;
             case 'psv':
-                return this.parser.delimiter = '|';
+                this.parser.setDelimiter('|');
+                break;
             default:
-                return this.parser.delimiter;
+                this.parser.setDelimiter(',');
         }
     }
 

@@ -15,7 +15,7 @@ export abstract class _Parser<Cell extends ViableCellTypes = string> {
     public data: Cell[][] = [];
 
     /** The delimiter to use */
-    public delimiter: string;
+    private delimiter: string;
 
     /** The string to parse */
     protected readonly doc: string;
@@ -55,6 +55,12 @@ export abstract class _Parser<Cell extends ViableCellTypes = string> {
     /** The column headers. The first row of the data */
     get headers(): Cell[] {
         return this.data[0];
+    }
+
+    /** Update the delimiter */
+    setDelimiter(delimiter: string): this {
+        this.delimiter = delimiter;
+        return this;
     }
 
     // METHODS
