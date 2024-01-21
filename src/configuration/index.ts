@@ -1,12 +1,10 @@
 // Library
 import * as vscode from 'vscode';
+import { EXTENSION_ID } from '../constants';
 
 // -------------
 // CONFIGURATION
 // -------------
-
-/** The identifier of the extension */
-const EXTENSION_ID = 'vscsv' as const;
 
 export class Configuration {
 
