@@ -12,7 +12,9 @@ export function activate(context: vscode.ExtensionContext) {
 	vscode.window.showInformationMessage('CSV Extension is now active!');
 
 	// Register the semantic tokens provider for the CSV language to provide syntax highlighting
-	DocumentSemanticTokensProvider.initialize(context);
+	if (vscode.workspace.getConfiguration().get('vscsv.syntaxHighlighting')) {
+		DocumentSemanticTokensProvider.initialize(context);
+	}
 
 	// Register the document symbol provider for the CSV language to provide symbol information
 	DocumentSymbolProvider.initialize(context);
