@@ -6,6 +6,10 @@ import { EXTENSION_ID } from '../constants';
 // CONFIGURATION
 // -------------
 
+/**
+ * Responsible for retrieving the configuration from the vscode workspace configuration
+ * and calling the registered listeners when the configuration is changed.
+ */
 export class Configuration {
 
     /** Maps the configuration keys to their default values */
