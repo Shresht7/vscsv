@@ -12,7 +12,10 @@ export class HoverProvider implements vscode.HoverProvider {
     // ------
 
     /** The document selector for the CSV language */
-    private static selector: vscode.DocumentSelector = { language: 'csv' };
+    private static selector: vscode.DocumentSelector = [
+        { language: 'csv' },
+        { language: 'tsv' },
+    ];
 
     /** The disposable used to unregister this provider, when needed */
     private static disposable: vscode.Disposable;
@@ -43,6 +46,9 @@ export class HoverProvider implements vscode.HoverProvider {
     private parser = new VSCSV();
 
     provideHover(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): vscode.ProviderResult<vscode.Hover> {
+
+        // Determine the delimiter to use based on the language ID of the document
+        this.parser.determineDelimiter(document);
 
         // Parse the document
         const csv = this.parser.parse(document.getText());

@@ -13,6 +13,12 @@ export class DocumentSemanticTokensProvider implements vscode.DocumentSemanticTo
     // STATIC
     // ------
 
+    /** The document selector for the CSV language */
+    private static selector: vscode.DocumentSelector = [
+        { language: 'csv' },
+        { language: 'tsv' },
+    ];
+
     /** The disposable used to unregister this provider */
     private static disposable: vscode.Disposable;
 
@@ -32,7 +38,7 @@ export class DocumentSemanticTokensProvider implements vscode.DocumentSemanticTo
         this.dispose(); // Dispose of any existing provider
         // Register the semantic tokens provider for the CSV language to provide syntax highlighting
         this.disposable = vscode.languages.registerDocumentSemanticTokensProvider(
-            { language: 'csv' },
+            this.selector,
             new DocumentSemanticTokensProvider(),
             this.legend
         );
@@ -48,12 +54,17 @@ export class DocumentSemanticTokensProvider implements vscode.DocumentSemanticTo
     // INSTANCE
     // --------
 
+
     /** The parser used to parse the CSV document */
     private parser = new VSCSV();
 
     async provideDocumentSemanticTokens(document: vscode.TextDocument, token: vscode.CancellationToken): Promise<vscode.SemanticTokens> {
+        // Determine the delimiter to use
+        this.parser.determineDelimiter(document);
+
         // Parse the CSV document
         const csv = this.parser.parse(document.getText());
+
         // Build the semantic tokens
         const builder = new vscode.SemanticTokensBuilder();
         csv.forEachCell((cell, rowNumber, columnNumber) => {
@@ -66,6 +77,7 @@ export class DocumentSemanticTokensProvider implements vscode.DocumentSemanticTo
                 tokenIndex
             );
         });
+
         // Return the semantic tokens
         return builder.build();
     }
