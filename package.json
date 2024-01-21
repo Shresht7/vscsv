@@ -19,8 +19,15 @@
           ".csv"
         ],
         "configuration": "./language-configuration.json"
+      },
+      {
+        "id": "tsv",
+        "extensions": [
+          ".tsv"
+        ],
+        "configuration": "./language-configuration.json"
       }
-    ]
+    ],
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
