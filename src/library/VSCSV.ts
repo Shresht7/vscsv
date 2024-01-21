@@ -24,14 +24,14 @@ export class VSCSV extends _Parser<Cell> {
     public determineDelimiter(document: vscode.TextDocument) {
         switch (document.languageId) {
             case 'csv':
-                this.setDelimiter(',');
+                this.delimiter = ',';
                 break;
             case 'tsv':
-                this.setDelimiter('\t');
+                this.delimiter = '\t';
                 break;
             default:
                 // ? Great place to use configuration settings to set custom delimiters
-                this.setDelimiter(',');
+                this.delimiter = ',';
         }
     }
 
