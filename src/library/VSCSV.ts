@@ -17,6 +17,18 @@ import { _Parser } from "./Parser";
  */
 export class VSCSV extends _Parser<Cell> {
 
+    protected parseCell(value: string, columnNumber: number, lineNumber: number): Cell {
+        return {
+            value,
+            line: lineNumber,
+            column: columnNumber,
+            columnEnd: columnNumber + value.length,
+            length: value.length,
+            range: new vscode.Range(lineNumber, columnNumber, lineNumber, columnNumber + value.length),
+            toString: () => value
+        };
+    }
+
     /**
      * Determines the delimiter to use based on the language ID of the document
      * @param document The document to use to determine the delimiter
@@ -33,18 +45,6 @@ export class VSCSV extends _Parser<Cell> {
                 // ? Great place to use configuration settings to set custom delimiters
                 this.delimiter = ',';
         }
-    }
-
-    protected parseCell(value: string, columnNumber: number, lineNumber: number): Cell {
-        return {
-            value,
-            line: lineNumber,
-            column: columnNumber,
-            columnEnd: columnNumber + value.length,
-            length: value.length,
-            range: new vscode.Range(lineNumber, columnNumber, lineNumber, columnNumber + value.length),
-            toString: () => value
-        };
     }
 
 }
