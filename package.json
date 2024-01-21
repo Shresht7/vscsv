@@ -28,6 +28,12 @@
         "configuration": "./language-configuration.json"
       }
     ],
+    "configurationDefaults": {
+      "[tsv]": {
+        "editor.insertSpaces": false,
+        "editor.detectIndentation": false
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
