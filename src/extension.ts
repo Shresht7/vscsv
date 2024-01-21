@@ -1,5 +1,6 @@
 // Library
 import * as vscode from 'vscode';
+import { Configuration } from './configuration';
 import {
 	DocumentSemanticTokensProvider,
 	DocumentSymbolProvider,
@@ -12,7 +13,7 @@ export function activate(context: vscode.ExtensionContext) {
 	vscode.window.showInformationMessage('CSV Extension is now active!');
 
 	// Register the semantic tokens provider for the CSV language to provide syntax highlighting
-	if (vscode.workspace.getConfiguration().get('vscsv.syntaxHighlighting')) {
+	if (Configuration.get('enableSyntaxHighlighting')) {
 		DocumentSemanticTokensProvider.initialize(context);
 	}
 
@@ -22,13 +23,14 @@ export function activate(context: vscode.ExtensionContext) {
 	// Register the hover provider for the CSV language to provide hover information
 	HoverProvider.initialize(context);
 
-	vscode.workspace.onDidChangeConfiguration((e) => {
-		if (e.affectsConfiguration('vscsv.syntaxHighlighting')) {
-			if (vscode.workspace.getConfiguration().get('vscsv.syntaxHighlighting')) {
-				DocumentSemanticTokensProvider.initialize(context);
-			} else {
-				DocumentSemanticTokensProvider.dispose();
-			}
+	// Register the configuration listeners
+	Configuration.initialize(context);
+
+	Configuration.registerListener('enableSyntaxHighlighting', (value) => {
+		if (value) {
+			DocumentSemanticTokensProvider.initialize(context);
+		} else {
+			DocumentSemanticTokensProvider.dispose();
 		}
 	});
 
