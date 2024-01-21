@@ -22,6 +22,16 @@ export function activate(context: vscode.ExtensionContext) {
 	// Register the hover provider for the CSV language to provide hover information
 	HoverProvider.initialize(context);
 
+	vscode.workspace.onDidChangeConfiguration((e) => {
+		if (e.affectsConfiguration('vscsv.syntaxHighlighting')) {
+			if (vscode.workspace.getConfiguration().get('vscsv.syntaxHighlighting')) {
+				DocumentSemanticTokensProvider.initialize(context);
+			} else {
+				DocumentSemanticTokensProvider.dispose();
+			}
+		}
+	});
+
 }
 
 /** This method is called when your extension is deactivated */
