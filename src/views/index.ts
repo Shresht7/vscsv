@@ -1,5 +1,6 @@
 // Library
 import * as vscode from 'vscode';
+import { generateNonce } from '../utils';
 
 // -------
 // WEBVIEW
@@ -88,7 +89,33 @@ export class Webview {
     }
 
     private getHtmlForWebview(): string {
-        return 'Hello World!';
+
+        const scriptPath = vscode.Uri.joinPath(this.extensionUri, 'media', 'index.js');
+        const scriptUri = this.panel.webview.asWebviewUri(scriptPath);
+
+        // Use a nonce to allow only specific scripts to run
+        const nonce = generateNonce();
+
+        return `<!DOCTYPE html>
+        <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+                <!--
+                    Use a content security policy to only allow loading images from https or from our extension directory,
+                    and only allow scripts that have a specific nonce.
+                -->
+                <script type="module" nonce="${nonce}" src="${scriptUri}"></script>
+
+                <title>Webview</title>
+            </head>
+
+            <body>
+                <h1>Hello World!</h1>
+            </body>
+        </html>
+        `;
     }
 
     private static getWebviewOptions(extensionUri: vscode.Uri): vscode.WebviewOptions {
