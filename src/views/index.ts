@@ -96,7 +96,7 @@ export class Webview {
     private getHtmlForWebview(): string {
 
         // Local path to script and css for the webview
-        const scriptUri = this.getWebviewUri('media', 'main.js');
+        const scriptUri = this.getWebviewUri('media', 'index.js');
         const styleUri = this.getWebviewUri('media', 'vscode.css');
         const cssResetUri = this.getWebviewUri('media', 'reset.css');
 
