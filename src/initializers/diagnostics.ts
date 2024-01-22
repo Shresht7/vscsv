@@ -1,6 +1,7 @@
 // Library
 import * as vscode from 'vscode';
 import { DiagnosticsProvider } from '../providers';
+import { Configuration } from '../configuration';
 
 // -----------
 // DIAGNOSTICS
@@ -10,6 +11,17 @@ import { DiagnosticsProvider } from '../providers';
 export function initialize(context: vscode.ExtensionContext) {
 
     // Register the diagnostics provider to provide diagnostics
-    DiagnosticsProvider.initialize(context);
+    if (Configuration.get('enableDiagnostics')) {
+        DiagnosticsProvider.initialize(context);
+    }
+
+    // Register the configuration listener for `enableDiagnostics` setting
+    Configuration.registerListener('enableDiagnostics', (value) => {
+        if (value) {
+            DiagnosticsProvider.initialize(context);
+        } else {
+            DiagnosticsProvider.dispose();
+        }
+    });
 
 }
