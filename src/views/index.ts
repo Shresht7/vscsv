@@ -29,6 +29,14 @@ export class Webview {
         }
     }
 
+    /** A map of message callbacks to be invoked when a message is received */
+    private messageCallbacks: Map<string, (msg: Message) => void> = new Map();
+
+    /** Send a message to the webview */
+    public postMessage<T>(message: Message<T>) {
+        this.panel.webview.postMessage(message);
+    }
+
     private constructor(
         private readonly panel: vscode.WebviewPanel,
         private readonly extensionUri: vscode.Uri
@@ -41,7 +49,10 @@ export class Webview {
         this.panel.onDidDispose(() => this.dispose(), null, this.disposables);
 
         // Handle messages from the webview
-        this.panel.webview.onDidReceiveMessage(this.handleMessage);
+        this.panel.webview.onDidReceiveMessage((msg: any) => {
+            const callback = this.messageCallbacks.get(msg.command);
+            callback?.(msg);
+        });
 
         // Update the content based on the view changes
         this.panel.onDidChangeViewState(e => {
@@ -49,15 +60,6 @@ export class Webview {
                 this.update();
             }
         }, null, this.disposables);
-    }
-
-    /** Handle messages sent from the webview to the extension */
-    private handleMessage(msg: any) {
-        switch (msg.command) {
-            case 'update':
-                vscode.window.showErrorMessage(msg.text);
-                return;
-        }
     }
 
     private static createPanel(
@@ -162,3 +164,12 @@ export class Webview {
     }
 
 }
+
+// ----------------
+// TYPE DEFINITIONS
+// ----------------
+
+type Message<T = string> = {
+    command: string
+    data: T
+};
