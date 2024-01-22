@@ -45,6 +45,11 @@
           "type": "boolean",
           "default": true,
           "description": "Enable/disable hover information in csv/tsv files"
+        },
+        "vscsv.enableDiagnostics": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable/disable diagnostics for csv/tsv files"
         }
       }
     },

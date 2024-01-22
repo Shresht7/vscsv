@@ -17,6 +17,7 @@ export class Configuration {
         enableSyntaxHighlighting: true,
         enableDocumentSymbols: true,
         enableHoverInformation: true,
+        enableDiagnostics: true,
     };
 
     /**

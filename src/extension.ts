@@ -1,7 +1,12 @@
 // Library
 import * as vscode from 'vscode';
 import { Configuration } from './configuration';
-import { DocumentSymbols, HoverInformation, SyntaxHighlighting } from './initializers';
+import {
+	Diagnostics,
+	DocumentSymbols,
+	HoverInformation,
+	SyntaxHighlighting
+} from './initializers';
 
 /** This method is called when your extension is activated */
 export function activate(context: vscode.ExtensionContext) {
@@ -19,6 +24,9 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// Register the hover provider for the CSV language to provide hover information
 	HoverInformation.initialize(context);
+
+	// Register the diagnostics provider for the CSV language to provide diagnostics
+	Diagnostics.initialize(context);
 
 }
 
