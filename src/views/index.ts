@@ -94,6 +94,9 @@ export class Webview {
         }
     }
 
+    // MESSAGE
+    // -------
+
     /** Send a message to the webview */
     public postMessage<T>(message: Message<T>) {
         this.panel.webview.postMessage(message);
@@ -108,10 +111,19 @@ export class Webview {
         }
     }
 
+    // CONTENT
+    // -------
+
     /** Update the webview */
     private update() {
         this.panel.title = "WEBVIEW";
         this.panel.webview.html = this.getHtmlForWebview();
+    }
+
+    /** Get the uri for the webview resource */
+    private getWebviewUri(...pathSegments: string[]): vscode.Uri {
+        const path = vscode.Uri.joinPath(this.extensionUri, ...pathSegments);
+        return this.panel.webview.asWebviewUri(path);
     }
 
     /** Get the html content for the webview */
@@ -150,12 +162,6 @@ export class Webview {
             </body>
         </html>
         `;
-    }
-
-    /** Get the uri for the webview resource */
-    private getWebviewUri(...pathSegments: string[]): vscode.Uri {
-        const path = vscode.Uri.joinPath(this.extensionUri, ...pathSegments);
-        return this.panel.webview.asWebviewUri(path);
     }
 
 }
