@@ -97,6 +97,8 @@ export class Webview {
 
         // Local path to script and css for the webview
         const scriptUri = this.getWebviewUri('media', 'main.js');
+        const styleUri = this.getWebviewUri('media', 'vscode.css');
+        const cssResetUri = this.getWebviewUri('media', 'reset.css');
 
         // Use a nonce to allow only specific scripts to run
         const nonce = generateNonce();
@@ -112,6 +114,9 @@ export class Webview {
                     and only allow scripts that have a specific nonce.
                 -->
                 <script type="module" nonce="${nonce}" src="${scriptUri}"></script>
+                
+                <link href="${cssResetUri}" rel="stylesheet">
+				<link href="${styleUri}" rel="stylesheet">
 
                 <title>Webview</title>
             </head>
