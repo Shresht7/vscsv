@@ -45,7 +45,20 @@ export class Webview {
         }
     }
 
-    public static createOrShow(extensionUri: vscode.Uri) {
+    private static create(
+        title: string,
+        viewColumn: vscode.ViewColumn | undefined,
+        options: vscode.WebviewOptions,
+    ) {
+        return vscode.window.createWebviewPanel(
+            this.viewType,
+            'Webview',
+            viewColumn || vscode.ViewColumn.One,
+            options,
+        );
+    }
+
+    public static show(extensionUri: vscode.Uri) {
         const viewColumn = vscode.window.activeTextEditor
             ? vscode.window.activeTextEditor.viewColumn
             : undefined;
@@ -57,10 +70,9 @@ export class Webview {
         }
 
         // Otherwise, create a new panel.
-        const panel = vscode.window.createWebviewPanel(
-            Webview.viewType,
-            'Cat Coding',
-            viewColumn || vscode.ViewColumn.One,
+        const panel = this.create(
+            'Webview',
+            viewColumn,
             this.getWebviewOptions(extensionUri),
         );
 

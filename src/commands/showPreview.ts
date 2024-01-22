@@ -8,5 +8,5 @@ import { Webview } from '../views';
 
 /** This method is called when the "Show Preview" command is executed */
 export function showPreview(context: vscode.ExtensionContext) {
-    Webview.createOrShow(context.extensionUri);
+    Webview.show(context.extensionUri);
 }
