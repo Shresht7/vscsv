@@ -36,6 +36,9 @@ export function activate(context: vscode.ExtensionContext) {
 	// Register the webview serializer
 	Webview.initialize(context);
 
+	// ! Remove this: This is just for testing the webview
+	vscode.commands.executeCommand('vscsv.showPreview');
+
 }
 
 /** This method is called when your extension is deactivated */
