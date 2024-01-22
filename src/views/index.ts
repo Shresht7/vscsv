@@ -8,12 +8,26 @@ import { generateNonce } from '../utils';
 
 export class Webview {
 
+    /** Identifies the type of the webview */
     public static readonly viewType = 'tablePreview';
 
     /** Tracks the current panel. Only one is allowed to exist at a time */
     public static currentPanel: Webview | undefined;
 
+    /** A collection of disposables to dispose when the panel is disposed */
     private disposables: vscode.Disposable[] = [];
+
+    /** Dispose off the current panel and related disposables */
+    private dispose() {
+        Webview.currentPanel = undefined; // Unset current panel
+        this.panel.dispose();   // Dispose off the panel
+        while (this.disposables.length) {
+            const disposable = this.disposables.pop();
+            if (disposable) {
+                disposable.dispose();
+            }
+        }
+    }
 
     private constructor(
         private readonly panel: vscode.WebviewPanel,
@@ -41,17 +55,6 @@ export class Webview {
                 this.update();
             }
         }, null, this.disposables);
-    }
-
-    private dispose() {
-        Webview.currentPanel = undefined; // Unset current panel
-        this.panel.dispose();   // Dispose off the panel
-        while (this.disposables.length) {
-            const disposable = this.disposables.pop();
-            if (disposable) {
-                disposable.dispose();
-            }
-        }
     }
 
     private static createPanel(
