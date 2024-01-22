@@ -66,7 +66,7 @@ export class Webview {
         this.panel.webview.onDidReceiveMessage((msg: any) => {
             const callback = this.messageCallbacks.get(msg.command);
             callback?.(msg);
-        });
+        }, null, this.disposables);
 
         // Update the content based on the view changes
         this.panel.onDidChangeViewState(e => {
