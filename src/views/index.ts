@@ -10,41 +10,49 @@ export class Webview {
     // STATIC
     // ------
 
+    /** The title of the webview panel */
+    private static readonly title = 'Webview';
+
     /** Identifies the type of the webview */
     public static readonly viewType = 'tablePreview';
 
     /** Tracks the current panel. Only one is allowed to exist at a time */
     public static currentPanel: Webview | undefined;
 
+    /** Create a new panel */
+    public static create(
+        extensionUri: vscode.Uri,
+        viewColumn: vscode.ViewColumn = vscode.ViewColumn.One,
+    ): Webview {
+        const panel = vscode.window.createWebviewPanel(
+            this.viewType,
+            this.title,
+            viewColumn,
+            this.getWebviewOptions(extensionUri),
+        );
+        return new Webview(panel, extensionUri);
+    }
+
     /**
      * Show the webview panel
      * The panel is created if it does not already exist
     */
-    public static createOrShow(extensionUri: vscode.Uri) {
-        const viewColumn = vscode.window.activeTextEditor
-            ? vscode.window.activeTextEditor.viewColumn
-            : undefined;
+    public static render(extensionUri: vscode.Uri) {
+        // Determine the column to show the webview in
+        const viewColumn = vscode.window.activeTextEditor?.viewColumn ?? vscode.ViewColumn.One;
 
-        // If we already have a panel, show it.
+        // If we already have a panel, show it
         if (Webview.currentPanel) {
             Webview.currentPanel.panel.reveal(viewColumn);
-            return;
+        } else {
+            // Otherwise, create a new panel
+            this.currentPanel = this.create(extensionUri, viewColumn);
         }
-
-        // Otherwise, create a new panel.
-        const panel = vscode.window.createWebviewPanel(
-            this.viewType,
-            'Webview',
-            viewColumn || vscode.ViewColumn.One,
-            this.getWebviewOptions(extensionUri),
-        );
-
-        Webview.currentPanel = new Webview(panel, extensionUri);
     }
 
     /** Revive the webview panel */
     public static revive(panel: vscode.WebviewPanel, extensionUri: vscode.Uri) {
-        Webview.currentPanel = new Webview(panel, extensionUri);
+        this.currentPanel = new Webview(panel, extensionUri);
     }
 
     // INSTANCE
@@ -62,10 +70,7 @@ export class Webview {
         this.panel.onDidDispose(() => this.dispose(), null, this.disposables);
 
         // Handle messages from the webview
-        this.panel.webview.onDidReceiveMessage((msg: any) => {
-            const callback = this.messageCallbacks.get(msg.command);
-            callback?.(msg);
-        }, null, this.disposables);
+        this.panel.webview.onDidReceiveMessage(this.handleMessage, null, this.disposables);
 
         // Update the content based on the view changes
         this.panel.onDidChangeViewState(e => {
@@ -90,12 +95,18 @@ export class Webview {
         }
     }
 
-    /** A map of message callbacks to be invoked when a message is received */
-    private messageCallbacks: Map<string, (msg: Message) => void> = new Map();
-
     /** Send a message to the webview */
     public postMessage<T>(message: Message<T>) {
         this.panel.webview.postMessage(message);
+    }
+
+    /** Handle messages from the webview */
+    private handleMessage(message: Message) {
+        switch (message.command) {
+            case 'alert':
+                vscode.window.showErrorMessage(message.data);
+                return;
+        }
     }
 
     /** Update the webview */
