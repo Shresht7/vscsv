@@ -88,10 +88,15 @@ export class Webview {
         this.panel.webview.html = this.getHtmlForWebview();
     }
 
+    private getWebviewUri(...pathSegments: string[]): vscode.Uri {
+        const path = vscode.Uri.joinPath(this.extensionUri, ...pathSegments);
+        return this.panel.webview.asWebviewUri(path);
+    }
+
     private getHtmlForWebview(): string {
 
-        const scriptPath = vscode.Uri.joinPath(this.extensionUri, 'media', 'index.js');
-        const scriptUri = this.panel.webview.asWebviewUri(scriptPath);
+        // Local path to script and css for the webview
+        const scriptUri = this.getWebviewUri('media', 'main.js');
 
         // Use a nonce to allow only specific scripts to run
         const nonce = generateNonce();
