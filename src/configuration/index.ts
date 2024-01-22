@@ -1,5 +1,6 @@
 // Library
 import * as vscode from 'vscode';
+import { Settings, SettingsKey } from './settings';
 import { EXTENSION_ID } from '../constants';
 
 // -------------
@@ -12,32 +13,24 @@ import { EXTENSION_ID } from '../constants';
  */
 export class Configuration {
 
-    /** Maps the configuration keys to their default values */
-    static Settings = {
-        enableSyntaxHighlighting: true,
-        enableDocumentSymbols: true,
-        enableHoverInformation: true,
-        enableDiagnostics: true,
-    };
-
     /**
      * Retrieve the value of the configuration key from the vscode workspace configuration
      * @param name The name of the configuration key to get
      * @returns The value of the configuration key (or undefined if it does not exist)
      */
-    static get<K extends keyof typeof this.Settings>(name: K): typeof this.Settings[K] | undefined {
+    static get<K extends SettingsKey>(name: K): typeof Settings[K] | undefined {
         return vscode.workspace.getConfiguration(EXTENSION_ID).get(name);
     }
 
     /** Map the configuration keys to callback functions that are called when the configuration is changed */
-    static Listeners = new Map<keyof typeof this.Settings, Listener<any>>();
+    static Listeners = new Map<SettingsKey, Listener<any>>();
 
     /**
      * Register a listener for the given configuration key
      * @param name The name of the configuration key to listen to
      * @param listener The listener to register
      */
-    static registerListener<K extends keyof typeof this.Settings>(name: K, listener: Listener<typeof this.Settings[K]>) {
+    static registerListener<K extends SettingsKey>(name: K, listener: Listener<typeof Settings[K]>) {
         this.Listeners.set(name, listener);
     }
 
@@ -46,8 +39,8 @@ export class Configuration {
         vscode.workspace.onDidChangeConfiguration((e) => {
 
             // Check if any of our configuration keys have changed ...
-            for (const k in this.Settings) {
-                const key = k as keyof typeof this.Settings;
+            for (const k in Settings) {
+                const key = k as SettingsKey;
                 const id = `${EXTENSION_ID}.${key}` as const;
                 if (e.affectsConfiguration(id)) {
 

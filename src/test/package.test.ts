@@ -2,6 +2,7 @@
 import * as vscode from 'vscode';
 import path from 'node:path';
 import assert from 'node:assert';
+import { Settings } from '../configuration/settings';
 import { Configuration } from '../configuration';
 import { EXTENSION_ID } from '../constants';
 
@@ -26,7 +27,7 @@ suite('package.json', () => {
     suite('Configuration', () => {
 
         test('All configuration options should be defined in package.json', () => {
-            const keys = Object.keys(Configuration.Settings).map(k => `${EXTENSION_ID}.${k}`);
+            const keys = Object.keys(Settings).map(k => `${EXTENSION_ID}.${k}`);
             const pkgKeys = Object.keys(pkg.contributes.configuration.properties);
             assert.deepStrictEqual(keys, pkgKeys);
         });
