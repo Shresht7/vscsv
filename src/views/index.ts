@@ -74,9 +74,7 @@ export class Webview {
 
         // Update the content based on the view changes
         this.panel.onDidChangeViewState(e => {
-            if (this.panel.visible) {
-                this.update();
-            }
+            if (this.panel.visible) { this.update(); }
         }, null, this.disposables);
     }
 
