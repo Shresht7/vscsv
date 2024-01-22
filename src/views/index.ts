@@ -31,6 +31,18 @@ export class Webview {
                 this.update();
             }
         }, null, this.disposables);
+
+        if (vscode.window.registerWebviewPanelSerializer) {
+            // Make sure we register a serializer in activation event
+            vscode.window.registerWebviewPanelSerializer(Webview.viewType, {
+                async deserializeWebviewPanel(webviewPanel: vscode.WebviewPanel, state: any) {
+                    console.log(`Got state: ${state}`);
+                    // Reset the webview options so we use latest uri for `localResourceRoots`.
+                    webviewPanel.webview.options = Webview.getWebviewOptions(extensionUri);
+                    Webview.revive(webviewPanel, extensionUri);
+                }
+            });
+        }
     }
 
     private dispose() {
