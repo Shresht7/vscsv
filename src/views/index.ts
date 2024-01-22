@@ -8,6 +8,9 @@ import { generateNonce } from '../utils';
 
 export class Webview {
 
+    // STATIC
+    // ------
+
     /** Identifies the type of the webview */
     public static readonly viewType = 'tablePreview';
 
@@ -62,20 +65,7 @@ export class Webview {
         }, null, this.disposables);
     }
 
-    private static createPanel(
-        title: string,
-        viewColumn: vscode.ViewColumn | undefined,
-        options: vscode.WebviewOptions,
-    ) {
-        return vscode.window.createWebviewPanel(
-            this.viewType,
-            'Webview',
-            viewColumn || vscode.ViewColumn.One,
-            options,
-        );
-    }
-
-    public static show(extensionUri: vscode.Uri) {
+    public static createOrShow(extensionUri: vscode.Uri) {
         const viewColumn = vscode.window.activeTextEditor
             ? vscode.window.activeTextEditor.viewColumn
             : undefined;
@@ -87,9 +77,10 @@ export class Webview {
         }
 
         // Otherwise, create a new panel.
-        const panel = this.createPanel(
+        const panel = vscode.window.createWebviewPanel(
+            this.viewType,
             'Webview',
-            viewColumn,
+            viewColumn || vscode.ViewColumn.One,
             this.getWebviewOptions(extensionUri),
         );
 
