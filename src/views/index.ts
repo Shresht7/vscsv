@@ -26,6 +26,15 @@ export class Webview {
         // This happens when the user closes the panel or when the panel is closed programmatically
         this.panel.onDidDispose(() => this.dispose(), null, this.disposables);
 
+        // Handle messages from the webview
+        this.panel.webview.onDidReceiveMessage(msg => {
+            switch (msg.command) {
+                case 'update':
+                    vscode.window.showErrorMessage(msg.text);
+                    return;
+            }
+        });
+
         // Update the content based on the view changes
         this.panel.onDidChangeViewState(e => {
             if (this.panel.visible) {
@@ -86,6 +95,13 @@ export class Webview {
     private update() {
         this.panel.title = "WEBVIEW";
         this.panel.webview.html = this.getHtmlForWebview();
+    }
+
+    public updateContents(contents: string) {
+        this.panel.webview.postMessage({
+            command: 'update',
+            text: contents
+        });
     }
 
     private getWebviewUri(...pathSegments: string[]): vscode.Uri {
