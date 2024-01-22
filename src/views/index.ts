@@ -45,7 +45,7 @@ export class Webview {
         }
     }
 
-    private static create(
+    private static createPanel(
         title: string,
         viewColumn: vscode.ViewColumn | undefined,
         options: vscode.WebviewOptions,
@@ -70,7 +70,7 @@ export class Webview {
         }
 
         // Otherwise, create a new panel.
-        const panel = this.create(
+        const panel = this.createPanel(
             'Webview',
             viewColumn,
             this.getWebviewOptions(extensionUri),
