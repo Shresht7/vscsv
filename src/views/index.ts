@@ -7,7 +7,7 @@ import * as vscode from 'vscode';
 
 export class Webview {
 
-    public static readonly viewType = 'table-preview';
+    public static readonly viewType = 'tablePreview';
 
     /** Tracks the current panel. Only one is allowed to exist at a time */
     public static currentPanel: Webview | undefined;

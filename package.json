@@ -9,7 +9,9 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onWebviewPanel:tablePreview"
+  ],
   "main": "./out/extension.js",
   "contributes": {
     "languages": [
