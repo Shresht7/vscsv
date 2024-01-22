@@ -41,13 +41,7 @@ export class Webview {
         this.panel.onDidDispose(() => this.dispose(), null, this.disposables);
 
         // Handle messages from the webview
-        this.panel.webview.onDidReceiveMessage(msg => {
-            switch (msg.command) {
-                case 'update':
-                    vscode.window.showErrorMessage(msg.text);
-                    return;
-            }
-        });
+        this.panel.webview.onDidReceiveMessage(this.handleMessage);
 
         // Update the content based on the view changes
         this.panel.onDidChangeViewState(e => {
@@ -55,6 +49,15 @@ export class Webview {
                 this.update();
             }
         }, null, this.disposables);
+    }
+
+    /** Handle messages sent from the webview to the extension */
+    private handleMessage(msg: any) {
+        switch (msg.command) {
+            case 'update':
+                vscode.window.showErrorMessage(msg.text);
+                return;
+        }
     }
 
     private static createPanel(
