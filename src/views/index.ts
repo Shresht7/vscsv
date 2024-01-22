@@ -1,6 +1,5 @@
 // Library
 import * as vscode from 'vscode';
-import { generateNonce } from '../utils';
 
 // -------
 // WEBVIEW
@@ -114,7 +113,7 @@ export class Webview {
         const cssResetUri = this.getWebviewUri('media', 'reset.css');
 
         // Use a nonce to allow only specific scripts to run
-        const nonce = generateNonce();
+        const nonce = this.generateNonce();
 
         return `<!DOCTYPE html>
         <html lang="en">
@@ -160,6 +159,16 @@ export class Webview {
     private getWebviewUri(...pathSegments: string[]): vscode.Uri {
         const path = vscode.Uri.joinPath(this.extensionUri, ...pathSegments);
         return this.panel.webview.asWebviewUri(path);
+    }
+
+    /** Generate a nonce to be used in the webview */
+    private generateNonce(): string {
+        const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let nonce = '';
+        for (let i = 0; i < 32; i++) {
+            nonce += possible.charAt(Math.floor(Math.random() * possible.length));
+        }
+        return nonce;
     }
 
 }
