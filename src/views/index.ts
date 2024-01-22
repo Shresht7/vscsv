@@ -1,5 +1,6 @@
 // Library
 import * as vscode from 'vscode';
+import { generateNonce, getWebviewOptions } from './utils';
 
 // -------
 // WEBVIEW
@@ -28,7 +29,7 @@ export class Webview {
             this.viewType,
             this.title,
             viewColumn,
-            this.getWebviewOptions(extensionUri),
+            getWebviewOptions(extensionUri),
         );
         return new Webview(panel, extensionUri);
     }
@@ -122,7 +123,7 @@ export class Webview {
         const cssResetUri = this.getWebviewUri('media', 'reset.css');
 
         // Use a nonce to allow only specific scripts to run
-        const nonce = this.generateNonce();
+        const nonce = generateNonce();
 
         return `<!DOCTYPE html>
         <html lang="en">
@@ -151,33 +152,10 @@ export class Webview {
         `;
     }
 
-    // HELPER METHODS
-    // --------------
-
-    /** Get the webview options */
-    public static getWebviewOptions(extensionUri: vscode.Uri): vscode.WebviewOptions {
-        return {
-            // Enable JavaScript in the webview
-            enableScripts: true,
-            // Restrict the webview to only loading content from our extension's `media` directory.
-            localResourceRoots: [vscode.Uri.joinPath(extensionUri, 'media')]
-        };
-    }
-
     /** Get the uri for the webview resource */
     private getWebviewUri(...pathSegments: string[]): vscode.Uri {
         const path = vscode.Uri.joinPath(this.extensionUri, ...pathSegments);
         return this.panel.webview.asWebviewUri(path);
-    }
-
-    /** Generate a nonce to be used in the webview */
-    private generateNonce(): string {
-        const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        let nonce = '';
-        for (let i = 0; i < 32; i++) {
-            nonce += possible.charAt(Math.floor(Math.random() * possible.length));
-        }
-        return nonce;
     }
 
 }
