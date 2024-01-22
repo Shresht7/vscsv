@@ -17,28 +17,39 @@ export class Webview {
     /** Tracks the current panel. Only one is allowed to exist at a time */
     public static currentPanel: Webview | undefined;
 
-    /** A collection of disposables to dispose when the panel is disposed */
-    private disposables: vscode.Disposable[] = [];
+    /**
+     * Show the webview panel
+     * The panel is created if it does not already exist
+    */
+    public static createOrShow(extensionUri: vscode.Uri) {
+        const viewColumn = vscode.window.activeTextEditor
+            ? vscode.window.activeTextEditor.viewColumn
+            : undefined;
 
-    /** Dispose off the current panel and related disposables */
-    private dispose() {
-        Webview.currentPanel = undefined; // Unset current panel
-        this.panel.dispose();   // Dispose off the panel
-        while (this.disposables.length) {
-            const disposable = this.disposables.pop();
-            if (disposable) {
-                disposable.dispose();
-            }
+        // If we already have a panel, show it.
+        if (Webview.currentPanel) {
+            Webview.currentPanel.panel.reveal(viewColumn);
+            return;
         }
+
+        // Otherwise, create a new panel.
+        const panel = vscode.window.createWebviewPanel(
+            this.viewType,
+            'Webview',
+            viewColumn || vscode.ViewColumn.One,
+            this.getWebviewOptions(extensionUri),
+        );
+
+        Webview.currentPanel = new Webview(panel, extensionUri);
     }
 
-    /** A map of message callbacks to be invoked when a message is received */
-    private messageCallbacks: Map<string, (msg: Message) => void> = new Map();
-
-    /** Send a message to the webview */
-    public postMessage<T>(message: Message<T>) {
-        this.panel.webview.postMessage(message);
+    /** Revive the webview panel */
+    public static revive(panel: vscode.WebviewPanel, extensionUri: vscode.Uri) {
+        Webview.currentPanel = new Webview(panel, extensionUri);
     }
+
+    // INSTANCE
+    // --------
 
     private constructor(
         private readonly panel: vscode.WebviewPanel,
@@ -65,49 +76,36 @@ export class Webview {
         }, null, this.disposables);
     }
 
-    public static createOrShow(extensionUri: vscode.Uri) {
-        const viewColumn = vscode.window.activeTextEditor
-            ? vscode.window.activeTextEditor.viewColumn
-            : undefined;
+    /** A collection of disposables to dispose when the panel is disposed */
+    private disposables: vscode.Disposable[] = [];
 
-        // If we already have a panel, show it.
-        if (Webview.currentPanel) {
-            Webview.currentPanel.panel.reveal(viewColumn);
-            return;
+    /** Dispose off the current panel and related disposables */
+    private dispose() {
+        Webview.currentPanel = undefined; // Unset current panel
+        this.panel.dispose();   // Dispose off the panel
+        while (this.disposables.length) {
+            const disposable = this.disposables.pop();
+            if (disposable) {
+                disposable.dispose();
+            }
         }
-
-        // Otherwise, create a new panel.
-        const panel = vscode.window.createWebviewPanel(
-            this.viewType,
-            'Webview',
-            viewColumn || vscode.ViewColumn.One,
-            this.getWebviewOptions(extensionUri),
-        );
-
-        Webview.currentPanel = new Webview(panel, extensionUri);
     }
 
-    public static revive(panel: vscode.WebviewPanel, extensionUri: vscode.Uri) {
-        Webview.currentPanel = new Webview(panel, extensionUri);
+    /** A map of message callbacks to be invoked when a message is received */
+    private messageCallbacks: Map<string, (msg: Message) => void> = new Map();
+
+    /** Send a message to the webview */
+    public postMessage<T>(message: Message<T>) {
+        this.panel.webview.postMessage(message);
     }
 
+    /** Update the webview */
     private update() {
         this.panel.title = "WEBVIEW";
         this.panel.webview.html = this.getHtmlForWebview();
     }
 
-    public updateContents(contents: string) {
-        this.panel.webview.postMessage({
-            command: 'update',
-            text: contents
-        });
-    }
-
-    private getWebviewUri(...pathSegments: string[]): vscode.Uri {
-        const path = vscode.Uri.joinPath(this.extensionUri, ...pathSegments);
-        return this.panel.webview.asWebviewUri(path);
-    }
-
+    /** Get the html content for the webview */
     private getHtmlForWebview(): string {
 
         // Local path to script and css for the webview
@@ -145,6 +143,10 @@ export class Webview {
         `;
     }
 
+    // HELPER METHODS
+    // --------------
+
+    /** Get the webview options */
     public static getWebviewOptions(extensionUri: vscode.Uri): vscode.WebviewOptions {
         return {
             // Enable JavaScript in the webview
@@ -152,6 +154,12 @@ export class Webview {
             // Restrict the webview to only loading content from our extension's `media` directory.
             localResourceRoots: [vscode.Uri.joinPath(extensionUri, 'media')]
         };
+    }
+
+    /** Get the uri for the webview resource */
+    private getWebviewUri(...pathSegments: string[]): vscode.Uri {
+        const path = vscode.Uri.joinPath(this.extensionUri, ...pathSegments);
+        return this.panel.webview.asWebviewUri(path);
     }
 
 }
