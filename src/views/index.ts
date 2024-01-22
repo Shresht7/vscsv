@@ -56,6 +56,11 @@ export class Webview {
         this.currentPanel = new Webview(panel, extensionUri);
     }
 
+    /** Send a message to the webview */
+    public static postMessage<T>(message: Message<T>) {
+        this.currentPanel?.panel.webview.postMessage(message);
+    }
+
     // INSTANCE
     // --------
 
@@ -97,10 +102,6 @@ export class Webview {
     // MESSAGE
     // -------
 
-    /** Send a message to the webview */
-    public postMessage<T>(message: Message<T>) {
-        this.panel.webview.postMessage(message);
-    }
 
     /** Handle messages from the webview */
     private handleMessage(message: Message) {
@@ -158,7 +159,8 @@ export class Webview {
             </head>
 
             <body>
-                <h1>Hello World!</h1>
+                <table id="table">
+                </table>
             </body>
         </html>
         `;
