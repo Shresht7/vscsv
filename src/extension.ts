@@ -7,6 +7,7 @@ import {
 	HoverInformation,
 	SyntaxHighlighting
 } from './initializers';
+import { Webview } from './views';
 
 /** This method is called when your extension is activated */
 export function activate(context: vscode.ExtensionContext) {
@@ -27,6 +28,8 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// Register the diagnostics provider for the CSV language to provide diagnostics
 	Diagnostics.initialize(context);
+
+	Webview.createOrShow(context.extensionUri);
 
 }
 
