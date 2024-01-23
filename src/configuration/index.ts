@@ -23,7 +23,7 @@ export class Configuration {
     }
 
     /** Map the configuration keys to callback functions that are called when the configuration is changed */
-    static Listeners = new Map<SettingsKey, Listener<any>>();
+    static listeners = new Map<SettingsKey, Listener<any>>();
 
     /**
      * Register a listener for the given configuration key
@@ -31,7 +31,7 @@ export class Configuration {
      * @param listener The listener to register
      */
     static registerListener<K extends SettingsKey>(name: K, listener: Listener<typeof Settings[K]>) {
-        this.Listeners.set(name, listener);
+        this.listeners.set(name, listener);
     }
 
     /** Whether or not the configuration has been initialized */
@@ -51,7 +51,7 @@ export class Configuration {
                 if (e.affectsConfiguration(id)) {
 
                     // ... and call the registered listener for that key
-                    const callback = this.Listeners.get(key);
+                    const callback = this.listeners.get(key);
                     const value = this.get(key);
                     callback?.(value);
 
