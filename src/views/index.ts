@@ -137,7 +137,6 @@ export class Webview {
 
     /** Update the webview */
     private update() {
-        this.panel.title = "WEBVIEW";
         this.panel.webview.html = this.getHtmlForWebview();
     }
 
