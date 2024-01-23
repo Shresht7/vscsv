@@ -19,6 +19,9 @@ export class Webview {
     /** Identifies the type of the webview */
     public static readonly viewType = 'tablePreview';
 
+    /** The column in which the webview should appear */
+    private static readonly viewColumn = vscode.ViewColumn.Beside;
+
     /** Tracks the current panel. Only one is allowed to exist at a time */
     public static currentPanel: Webview | undefined;
 
@@ -28,7 +31,7 @@ export class Webview {
     /** Create a new panel */
     public static create(
         extensionUri: vscode.Uri,
-        viewColumn: vscode.ViewColumn = vscode.ViewColumn.One,
+        viewColumn: vscode.ViewColumn = this.viewColumn,
     ): Webview {
         const panel = vscode.window.createWebviewPanel(
             this.viewType,
@@ -43,10 +46,7 @@ export class Webview {
      * Show the webview panel
      * The panel is created if it does not already exist
     */
-    public static render(extensionUri: vscode.Uri) {
-        // Determine the column to show the webview in
-        const viewColumn = vscode.window.activeTextEditor?.viewColumn ?? vscode.ViewColumn.One;
-
+    public static render(extensionUri: vscode.Uri, viewColumn: vscode.ViewColumn = this.viewColumn) {
         // If we already have a panel, show it
         if (Webview.currentPanel) {
             Webview.currentPanel.panel.reveal(viewColumn);
