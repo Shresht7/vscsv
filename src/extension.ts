@@ -1,8 +1,8 @@
 // Library
 import * as vscode from 'vscode';
 import { Configuration } from './configuration';
+import { Commands } from './commands';
 import {
-	Commands,
 	Diagnostics,
 	DocumentSymbols,
 	HoverInformation,
