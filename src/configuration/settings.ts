@@ -10,4 +10,5 @@ export const Settings = {
     enableDiagnostics: true,
 };
 
+/** The valid configuration keys */
 export type SettingsKey = keyof typeof Settings;
