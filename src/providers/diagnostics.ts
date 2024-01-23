@@ -1,22 +1,63 @@
 // Library
 import * as vscode from 'vscode';
+import { Configuration } from '../configuration';
 import { VSCSV } from '../library';
 
 // -----------
 // DIAGNOSTICS
 // -----------
 
-/** A diagnostics provider for the CSV language to provide diagnostics. */
 export class DiagnosticsProvider {
 
-    /** The name of the language for which this provider provides diagnostics */
-    private static name = 'csv';
+    // STATIC
+    // ------
+
+    private static diagnosticsProviders = [
+        new DiagnosticsProvider('csv', ","),
+        new DiagnosticsProvider('tsv', "\t"),
+    ];
+
+    /** Initialize the diagnostics providers */
+    public static initialize(context: vscode.ExtensionContext) {
+
+        // Register the diagnostics providers to provide diagnostics
+        if (Configuration.get('enableDiagnostics')) {
+            this.diagnosticsProviders.forEach(p => p.initialize(context));
+        }
+
+        // Register the configuration listener for `enableDiagnostics` setting
+        Configuration.registerListener('enableDiagnostics', (value) => {
+            if (value) {
+                this.diagnosticsProviders.forEach(p => p.initialize(context));
+            } else {
+                this.diagnosticsProviders.forEach(p => p.dispose());
+            }
+        });
+
+    }
+
+    // INSTANCE
+    // --------
 
     /**
      * This collection of diagnostics, once registered with vscode, will be displayed in the Problems panel
      * @see {@link vscode.DiagnosticCollection}
      */
-    protected static diagnostics: vscode.DiagnosticCollection = vscode.languages.createDiagnosticCollection(this.name);
+    protected diagnostics: vscode.DiagnosticCollection;
+
+    /** The parser to use for parsing the document */
+    private parser: VSCSV;
+
+    constructor(
+        /** The name of the language for which this provider provides diagnostics */
+        private languageId: string,
+        delimiter: string = ",",
+    ) {
+        this.diagnostics = vscode.languages.createDiagnosticCollection(this.languageId);
+        this.parser = new VSCSV({ delimiter });
+    }
+
+
 
     /**
      * Initializes the {@linkcode diagnostics} collection and subscribes to events.
@@ -24,20 +65,17 @@ export class DiagnosticsProvider {
      * all the properties have been properly initialized before they are used.
      * @param context The extension context ({@linkcode vscode.ExtensionContext})
      */
-    static initialize(context: vscode.ExtensionContext) {
-
+    initialize(context: vscode.ExtensionContext) {
         // Provide diagnostics for the active document
         if (vscode.window.activeTextEditor) {
             this.provideDiagnostics(vscode.window.activeTextEditor.document);
         }
-
         // Subscribe to events
         this.subscribeToEvents(context);
-
     }
 
     /** Dispose off the diagnostics provider */
-    static dispose() {
+    dispose() {
         this.diagnostics.dispose();
     }
 
@@ -46,38 +84,35 @@ export class DiagnosticsProvider {
      * @param document The {@link vscode.TextDocument | text document} to check ({@linkcode vscode.TextDocument})
      * @returns `true` if {@link diagnostics} are allowed for the given {@link vscode.TextDocument | text document}, `false` otherwise
      */
-    private static shouldProvideDiagnostics(document: vscode.TextDocument): boolean {
-        return document && document.languageId === this.name;
+    private shouldProvideDiagnostics(document: vscode.TextDocument): boolean {
+        return document && document.languageId === this.languageId;
     }
 
     /**
      * Provides {@link diagnostics} for the given {@link vscode.TextDocument | text document}
      * @param document The {@link vscode.TextDocument | text document} for which to provide {@link diagnostics} ({@linkcode vscode.TextDocument})
      */
-    private static provideDiagnostics(document: vscode.TextDocument) {
+    private provideDiagnostics(document: vscode.TextDocument) {
         if (document && this.shouldProvideDiagnostics(document)) {
             const diagnostics = this.getDiagnostics(document);
             this.diagnostics.set(document.uri, diagnostics);
         }
     }
 
-    /** The parser used to parse the CSV document */
-    private static parser = new VSCSV();
-
     /**
      * Get the collection of diagnostics for the given document
      * @param document The document for which to provide diagnostics
      * @returns The collection of diagnostics for the given document
      */
-    private static getDiagnostics(document: vscode.TextDocument): vscode.Diagnostic[] {
+    private getDiagnostics(document: vscode.TextDocument): vscode.Diagnostic[] {
         const diagnostics: vscode.Diagnostic[] = [];
 
-        const csv = this.parser.parse(document.getText());
+        const { headers, data } = this.parser.parse(document.getText());
 
-        const colLength = csv.headers.length;
+        const colLength = headers.length;
 
-        for (const r in csv.data) {
-            const row = csv.data[r];
+        for (const r in data) {
+            const row = data[r];
             if (row.length !== colLength) {
                 const range = new vscode.Range(+r, 0, +r, Number.MAX_VALUE);
                 const diagnostic = new vscode.Diagnostic(
@@ -97,7 +132,7 @@ export class DiagnosticsProvider {
      * Subscribe to events that will trigger diagnostics
      * @param context The extension context ({@linkcode vscode.ExtensionContext})
      */
-    private static subscribeToEvents(context: vscode.ExtensionContext) {
+    private subscribeToEvents(context: vscode.ExtensionContext) {
         context.subscriptions.push(
 
             // Update diagnostics when the active document changes
