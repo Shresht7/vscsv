@@ -18,6 +18,10 @@
       {
         "command": "vscsv.showPreview",
         "title": "Open Table Preview",
+        "category": "VSCSV",
+        "icon": "$(open-preview)"
+      }
+    ],
     "menus": {
       "commandPalette": [
         {
@@ -86,7 +90,7 @@
     "vscode:prepublish": "npm run package",
     "package": "NODE_ENV=production node ./esbuild.mjs",
     "compile": "node ./esbuild.mjs",
-    "watch": "node ./esbuild.mjs --watch",
+    "watch": "node ./esbuild.mjs",
     "lint": "eslint src --ext ts",
     "pretest": "npm run compile && npm run lint",
     "test": "vscode-test"
