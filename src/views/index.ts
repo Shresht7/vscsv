@@ -1,6 +1,6 @@
 // Library
 import * as vscode from 'vscode';
-import { generateNonce, getWebviewOptions } from './utils';
+import { generateNonce } from './utils';
 
 // -------
 // WEBVIEW
@@ -29,7 +29,7 @@ export class Webview {
             this.viewType,
             this.title,
             viewColumn,
-            getWebviewOptions(extensionUri),
+            this.getOptions(extensionUri),
         );
         return new Webview(panel, extensionUri);
     }
@@ -73,12 +73,21 @@ export class Webview {
             async deserializeWebviewPanel(webviewPanel: vscode.WebviewPanel, state: any) {
                 console.log(`Got state: ${state}`);
                 // Reset the webview options so we use latest uri for `localResourceRoots`.
-                webviewPanel.webview.options = getWebviewOptions(context.extensionUri);
+                webviewPanel.webview.options = Webview.getOptions(context.extensionUri);
                 Webview.revive(webviewPanel, context.extensionUri);
             }
         });
 
         this.initialized = true; // Set initialized to true
+    }
+
+    private static getOptions(extensionUri: vscode.Uri): vscode.WebviewOptions {
+        return {
+            // Enable JavaScript in the webview
+            enableScripts: true,
+            // Restrict the webview to only loading content from our extension's `media` directory.
+            localResourceRoots: [vscode.Uri.joinPath(extensionUri, 'out')]
+        };
     }
 
     // INSTANCE
