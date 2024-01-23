@@ -1,7 +1,7 @@
 // Library
 import * as vscode from 'vscode';
-import { VSCSV } from '../library';
-import { shuffle } from '../utils';
+import { VSCSV } from '../../library';
+import { shuffle } from '../../utils';
 
 // ---------
 // HIGHLIGHT
