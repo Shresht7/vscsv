@@ -1,8 +1,7 @@
 // Library
-import { createRow } from "./helpers";
+import { Table } from "./table";
 
-// DOM ELEMENTS
-const table = document.getElementById('table')! as HTMLTableElement;
+const table = new Table('table');
 
 // Listen for messages from the main thread and render the table 
 window.addEventListener('message', (event) => {
@@ -11,23 +10,24 @@ window.addEventListener('message', (event) => {
     switch (message.command) {
 
         case 'update':
-
-            // Clear the table
-            table.innerHTML = '';
-            /** A collection of table row elements to append to the table */
-            const tableRows: HTMLTableRowElement[] = [];
-
-            // Create the header row
-            const headers = message.data.shift();
-            tableRows.push(createRow(headers, true));
-
-            // Create the data rows
-            for (const row of message.data) {
-                tableRows.push(createRow(row, false));
-            }
-
-            // Append the rows to the table
-            table.append(...tableRows);
+            handleUpdate(message.data);
             break;
     }
 });
+
+function handleUpdate(payload: string[][]) {
+    // Clear the table
+    table.clear();
+
+    // Return early if there is no data
+    if (payload?.length < 1) { return; }
+
+    // Create the header row
+    const headers = payload.shift()!;
+    table.addHeaderRow(headers);
+
+    // Create the data rows
+    for (const row of payload) {
+        table.addDataRow(row);
+    }
+}
