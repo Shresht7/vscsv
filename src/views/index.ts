@@ -146,7 +146,7 @@ export class Webview {
                     Use a content security policy to only allow loading images from https or from our extension directory,
                     and only allow scripts that have a specific nonce.
                 -->
-                <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${this.panel.webview.cspSource}; script-src 'nonce-${nonce}';">
+                <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'nonce-${nonce}';">
 
                 <script type="module" nonce="${nonce}" src="${scriptUri}"></script>
 
@@ -154,8 +154,7 @@ export class Webview {
             </head>
 
             <body>
-                <table id="table">
-                </table>
+                <table id="table"></table>
             </body>
         </html>
         `;

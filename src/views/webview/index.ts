@@ -27,11 +27,15 @@ function createRow(row: string[], isHeader: boolean) {
 
 // Listen for messages from the main thread and render the table 
 window.addEventListener('message', (event) => {
-    const payload = /** @type any[] */ (event.data.data);
-    table.innerHTML = '';
-    const headers = payload.shift();
-    createRow(headers, true);
-    for (const row of payload) {
-        createRow(row, false);
+    const message = /** @type any[] */ (event.data);
+    switch (message.command) {
+        case 'update':
+            table.innerHTML = '';
+            const headers = message.data.shift();
+            createRow(headers, true);
+            for (const row of message.data) {
+                createRow(row, false);
+            }
+            break;
     }
 });
