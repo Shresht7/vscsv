@@ -2,11 +2,13 @@
 import * as vscode from 'vscode';
 import { Configuration } from './configuration';
 import { Commands } from './commands';
-import { Diagnostics, Symbols, SyntaxHighlighting } from './providers';
-import { Webview } from './webview';
 import {
-	HoverInformation,
-} from './initializers';
+	Diagnostics,
+	Symbols,
+	SyntaxHighlighting,
+	HoverInformation
+} from './providers';
+import { Webview } from './webview';
 
 /** This method is called when your extension is activated */
 export function activate(context: vscode.ExtensionContext) {
@@ -22,7 +24,7 @@ export function activate(context: vscode.ExtensionContext) {
 	// Register the diagnostics provider
 	Diagnostics.initialize(context);
 
-	// Register the hover provider for the CSV language to provide hover information
+	// Register the hover provider  provide hover information
 	HoverInformation.initialize(context);
 
 	// Register the document symbol provider to provide symbol information
@@ -31,7 +33,7 @@ export function activate(context: vscode.ExtensionContext) {
 	// Register the semantic tokens provider provide syntax highlighting
 	SyntaxHighlighting.initialize(context);
 
-	// Register the webview serializer
+	// Register the webview provider
 	Webview.initialize(context);
 
 }
