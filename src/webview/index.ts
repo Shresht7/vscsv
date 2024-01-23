@@ -95,7 +95,6 @@ export class Webview {
     /** Dispose off the current panel and related disposables */
     public static dispose() {
         Webview.currentPanel?.dispose();
-        Webview.currentPanel = undefined;
     }
 
     // OPTIONS
@@ -143,6 +142,7 @@ export class Webview {
 
     /** Dispose off the current panel and related disposables */
     public dispose() {
+        Webview.currentPanel = undefined; // Set current panel to undefined
         this.panel.dispose();   // Dispose off the panel
         while (this.disposables.length) {
             const disposable = this.disposables.pop();
