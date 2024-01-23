@@ -18,9 +18,22 @@
       {
         "command": "vscsv.showPreview",
         "title": "Open Table Preview",
-        "category": "VSCSV"
-      }
-    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "vscsv.showPreview",
+          "when": "editorLangId == csv || editorLangId == tsv",
+          "group": "VSCSV"
+        }
+      ],
+      "editor/title": [
+        {
+          "command": "vscsv.showPreview",
+          "when": "editorLangId == csv || editorLangId == tsv",
+          "group": "navigation"
+        }
+      ]
+    },
     "languages": [
       {
         "id": "csv",
