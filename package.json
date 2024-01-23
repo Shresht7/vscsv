@@ -15,6 +15,22 @@
   ],
   "main": "./out/extension.js",
   "contributes": {
+    "languages": [
+      {
+        "id": "csv",
+        "extensions": [
+          ".csv"
+        ],
+        "configuration": "./language-configuration.json"
+      },
+      {
+        "id": "tsv",
+        "extensions": [
+          ".tsv"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
     "commands": [
       {
         "command": "vscsv.showPreview",
@@ -39,22 +55,6 @@
         }
       ]
     },
-    "languages": [
-      {
-        "id": "csv",
-        "extensions": [
-          ".csv"
-        ],
-        "configuration": "./language-configuration.json"
-      },
-      {
-        "id": "tsv",
-        "extensions": [
-          ".tsv"
-        ],
-        "configuration": "./language-configuration.json"
-      }
-    ],
     "configuration": {
       "title": "VSCSV",
       "properties": {
