@@ -1,7 +1,8 @@
 // Library
 import * as vscode from 'vscode';
 import { Webview } from '../views';
-import { Parser, language } from '../library';
+import { Parser } from '../library';
+import { language } from '../library/helpers';
 
 // --------------------
 // SHOW PREVIEW COMMAND

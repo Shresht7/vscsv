@@ -1,5 +1,5 @@
 // Library
-import { LANGUAGE } from "../constants";
+import { LANGUAGE } from "../../constants";
 
 // --------
 // LANGUAGE
