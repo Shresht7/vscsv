@@ -34,8 +34,14 @@ export class Configuration {
         this.Listeners.set(name, listener);
     }
 
+    /** Whether or not the configuration has been initialized */
+    private static _initialized = false;
+
     /** Initialize the configuration listeners */
     static initialize(context: vscode.ExtensionContext) {
+        if (this._initialized) { return; } // Exit early if already initialized
+
+        // Register the configuration listener
         vscode.workspace.onDidChangeConfiguration((e) => {
 
             // Check if any of our configuration keys have changed ...
@@ -53,9 +59,11 @@ export class Configuration {
             }
 
         });
+
+        this._initialized = true; // Set the initialized flag
     }
 
-}
+};
 
 // -------------
 // UTILITY TYPES
