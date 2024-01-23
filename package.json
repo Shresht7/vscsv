@@ -3,6 +3,7 @@
   "displayName": "vscsv",
   "description": "VS Code features for CSV and TSV files",
   "version": "0.0.1",
+  "license": "MIT",
   "engines": {
     "vscode": "^1.85.0"
   },
