@@ -12,7 +12,7 @@ export class Webview {
     // ------
 
     /** The title of the webview panel */
-    private static readonly title = 'Webview';
+    private static readonly title = 'Table Preview';
 
     /** Identifies the type of the webview */
     public static readonly viewType = 'tablePreview';
@@ -81,6 +81,7 @@ export class Webview {
         this.initialized = true; // Set initialized to true
     }
 
+    /** Get the options for the webview */
     private static getOptions(extensionUri: vscode.Uri): vscode.WebviewOptions {
         return {
             // Enable JavaScript in the webview
@@ -90,8 +91,8 @@ export class Webview {
         };
     }
 
-    // INSTANCE
-    // --------
+    // CONSTRUCTOR
+    // -----------
 
     private constructor(
         private readonly panel: vscode.WebviewPanel,
@@ -112,6 +113,9 @@ export class Webview {
             if (this.panel.visible) { this.update(); }
         }, null, this.disposables);
     }
+
+    // DISPOSE
+    // -------
 
     /** A collection of disposables to dispose when the panel is disposed */
     private disposables: vscode.Disposable[] = [];
