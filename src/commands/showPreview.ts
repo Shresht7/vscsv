@@ -22,7 +22,7 @@ export function showPreview(context: vscode.ExtensionContext) {
     // Parse the data
     const delimiter = determineDelimiter(document);
     const parser = new Parser({ delimiter });
-    const data = parser.parse(document.getText());
+    const { data } = parser.parse(document.getText());
 
     // Send the data to the webview
     Webview.postMessage({
