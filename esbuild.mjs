@@ -50,6 +50,17 @@ try {
     const context = await esbuild.context({
         ...extensionOptions,
         ...webviewOptions,
+        // If the --watch flag is present, watch for changes ...
+        plugins: !isProduction
+            ? [{
+                name: 'watch',
+                setup(build) {
+                    build.onEnd(() => {
+                        console.log('Changes detected, rebuilding...');
+                    });
+                }
+            }]
+            : undefined,
     });
 
     if (args.includes('--watch')) {
@@ -59,11 +70,10 @@ try {
     } else {
         // ... otherwise, just build once
         await context.rebuild();
+        // Dispose of the context to free up resources
+        await context.dispose();
         console.log('Build finished');
     }
-
-    // Dispose of the context to free up resources
-    await context.dispose();
 
 } catch (err) {
     process.stderr.write(err.message);
