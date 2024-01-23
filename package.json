@@ -9,9 +9,35 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onWebviewPanel:tablePreview"
+  ],
   "main": "./out/extension.js",
   "contributes": {
+    "commands": [
+      {
+        "command": "vscsv.showPreview",
+        "title": "Open Table Preview",
+        "category": "VSCSV",
+        "icon": "$(open-preview)"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "vscsv.showPreview",
+          "when": "editorLangId == csv || editorLangId == tsv",
+          "group": "VSCSV"
+        }
+      ],
+      "editor/title": [
+        {
+          "command": "vscsv.showPreview",
+          "when": "editorLangId == csv || editorLangId == tsv",
+          "group": "navigation"
+        }
+      ]
+    },
     "languages": [
       {
         "id": "csv",
@@ -61,22 +87,26 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
-    "pretest": "npm run compile && npm run lint",
+    "vscode:prepublish": "npm run package",
+    "package": "NODE_ENV=production node ./esbuild.mjs",
+    "compile": "node ./esbuild.mjs",
+    "watch": "node ./esbuild.mjs",
     "lint": "eslint src --ext ts",
+    "pretest": "npm run compile && npm run lint",
     "test": "vscode-test"
   },
   "devDependencies": {
-    "@types/vscode": "^1.85.0",
     "@types/mocha": "^10.0.6",
     "@types/node": "18.x",
+    "@types/vscode": "^1.85.0",
     "@typescript-eslint/eslint-plugin": "^6.15.0",
     "@typescript-eslint/parser": "^6.15.0",
-    "eslint": "^8.56.0",
-    "typescript": "^5.3.3",
     "@vscode/test-cli": "^0.0.4",
-    "@vscode/test-electron": "^2.3.8"
+    "@vscode/test-electron": "^2.3.8",
+    "eslint": "^8.56.0",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "esbuild": "^0.19.11"
   }
 }

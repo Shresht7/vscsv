@@ -2,10 +2,12 @@
 import * as vscode from 'vscode';
 import { Configuration } from './configuration';
 import {
+	Commands,
 	Diagnostics,
 	DocumentSymbols,
 	HoverInformation,
-	SyntaxHighlighting
+	SyntaxHighlighting,
+	Webview,
 } from './initializers';
 
 /** This method is called when your extension is activated */
@@ -15,6 +17,9 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// Register the configuration listeners
 	Configuration.initialize(context);
+
+	// Initialize Commands
+	Commands.initialize(context);
 
 	// Register the semantic tokens provider for the CSV language to provide syntax highlighting
 	SyntaxHighlighting.initialize(context);
@@ -27,6 +32,9 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// Register the diagnostics provider for the CSV language to provide diagnostics
 	Diagnostics.initialize(context);
+
+	// Register the webview serializer
+	Webview.initialize(context);
 
 }
 
