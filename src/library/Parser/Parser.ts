@@ -159,7 +159,7 @@ export abstract class _Parser<Cell extends ViableCellTypes = string> {
         this.data = [];
 
         // Split the document into an array of lines
-        const lines = doc.split(/\r?\n/);
+        const lines = doc.trim().split(/\r?\n/);
 
         // Iterate over each line and collect the cells
         for (let l = 0; l < lines.length; l++) {
