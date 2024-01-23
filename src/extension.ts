@@ -21,7 +21,7 @@ import { Webview } from './webview';
 /** This method is called when your extension is activated */
 export function activate(context: vscode.ExtensionContext) {
 
-	vscode.window.showInformationMessage('CSV Extension is now active!');
+	vscode.window.showInformationMessage('CSV Extension is now active!'); // TODO: Remove this when the extension is ready
 
 	// Register the configuration listeners
 	Configuration.initialize(context);
