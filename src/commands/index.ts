@@ -9,6 +9,7 @@ import { showPreview } from './showPreview';
 // COMMANDS
 // --------
 
+/** Responsible for registering and managing the commands for the extension. */
 export class Commands {
 
     /** All the commands for the extension */
@@ -16,21 +17,14 @@ export class Commands {
         showPreview
     } as const;
 
-    /** Boolean indicating whether or not the commands have been initialized */
-    private static initialized = false;
-
     /** Initialize all the commands for the extension */
     public static initialize(context: vscode.ExtensionContext) {
-        if (!this.initialized) { return; } // Exit early if already initialized
-
         context.subscriptions.push(
             ...Object.entries(this.commands).map(([name, command]) => {
                 const id = this.id(name as keyof typeof this.commands);
                 return vscode.commands.registerCommand(id, () => command(context));
             })
         );
-
-        this.initialized = true; // Set the initialized flag
     }
 
     /** Get the fully qualified command ID */
