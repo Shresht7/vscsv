@@ -61,6 +61,26 @@ export class Webview {
         this.currentPanel?.panel.webview.postMessage(message);
     }
 
+    /** Whether the webview has been initialized */
+    private static initialized = false;
+
+    /** Initialize the webview */
+    public static initialize(context: vscode.ExtensionContext) {
+        if (this.initialized) { return; } // Return early if already initialized
+
+        // Make sure we register a serializer in activation event
+        vscode.window.registerWebviewPanelSerializer(Webview.viewType, {
+            async deserializeWebviewPanel(webviewPanel: vscode.WebviewPanel, state: any) {
+                console.log(`Got state: ${state}`);
+                // Reset the webview options so we use latest uri for `localResourceRoots`.
+                webviewPanel.webview.options = getWebviewOptions(context.extensionUri);
+                Webview.revive(webviewPanel, context.extensionUri);
+            }
+        });
+
+        this.initialized = true; // Set initialized to true
+    }
+
     // INSTANCE
     // --------
 

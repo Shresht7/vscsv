@@ -2,12 +2,12 @@
 import * as vscode from 'vscode';
 import { Configuration } from './configuration';
 import { Commands } from './commands';
+import { Webview } from './views';
 import {
 	Diagnostics,
 	DocumentSymbols,
 	HoverInformation,
 	SyntaxHighlighting,
-	Webview,
 } from './initializers';
 
 /** This method is called when your extension is activated */
