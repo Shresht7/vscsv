@@ -43,21 +43,28 @@ const webviewOptions = {
 };
 
 // Build the extension and webview code
-const context = await esbuild.context({
-    ...extensionOptions,
-    ...webviewOptions,
-});
-
 const args = process.argv.slice(2);
 try {
+
+    // Get the esbuild context
+    const context = await esbuild.context({
+        ...extensionOptions,
+        ...webviewOptions,
+    });
+
     if (args.includes('--watch')) {
+        // If the --watch flag is present, watch for changes ...
         await context.watch();
         console.log('Watching for changes...');
     } else {
-        console.log('Building...');
+        // ... otherwise, just build once
         await context.rebuild();
         console.log('Build finished');
     }
+
+    // Dispose of the context to free up resources
+    await context.dispose();
+
 } catch (err) {
     process.stderr.write(err.message);
     process.exit(1);
