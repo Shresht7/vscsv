@@ -1,0 +1,5 @@
+// ---------
+// PROVIDERS
+// ---------
+
+export * from './DocumentSymbolProvider';

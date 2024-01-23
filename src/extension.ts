@@ -2,10 +2,9 @@
 import * as vscode from 'vscode';
 import { Configuration } from './configuration';
 import { Commands } from './commands';
-import { Diagnostics } from './providers';
+import { Diagnostics, Symbols } from './providers';
 import { Webview } from './webview';
 import {
-	DocumentSymbols,
 	HoverInformation,
 	SyntaxHighlighting,
 } from './initializers';
@@ -27,11 +26,11 @@ export function activate(context: vscode.ExtensionContext) {
 	// Register the semantic tokens provider for the CSV language to provide syntax highlighting
 	SyntaxHighlighting.initialize(context);
 
-	// Register the document symbol provider for the CSV language to provide symbol information
-	DocumentSymbols.initialize(context);
-
 	// Register the hover provider for the CSV language to provide hover information
 	HoverInformation.initialize(context);
+
+	// Register the document symbol provider
+	Symbols.initialize(context);
 
 	// Register the webview serializer
 	Webview.initialize(context);
