@@ -1,6 +1,7 @@
 // Library
 import * as vscode from 'vscode';
 import { generateNonce } from './utils';
+import type { SendMessage, ReceiveMessage } from './types';
 
 // -------
 // WEBVIEW
@@ -8,6 +9,7 @@ import { generateNonce } from './utils';
 
 export class Webview {
 
+    // ------
     // STATIC
     // ------
 
@@ -19,6 +21,9 @@ export class Webview {
 
     /** Tracks the current panel. Only one is allowed to exist at a time */
     public static currentPanel: Webview | undefined;
+
+    // CREATE/  RENDER / REVIVE
+    // ------------------------
 
     /** Create a new panel */
     public static create(
@@ -56,10 +61,16 @@ export class Webview {
         this.currentPanel = new Webview(panel, extensionUri);
     }
 
+    // MESSAGE
+    // -------
+
     /** Send a message to the webview */
-    public static postMessage<T>(message: SendMessage) {
+    public static postMessage(message: SendMessage) {
         this.currentPanel?.panel.webview.postMessage(message);
     }
+
+    // INITIALIZE / DISPOSE
+    // --------------------
 
     /** Whether the webview has been initialized */
     private static initialized = false;
@@ -81,6 +92,15 @@ export class Webview {
         this.initialized = true; // Set initialized to true
     }
 
+    /** Dispose off the current panel and related disposables */
+    public static dispose() {
+        Webview.currentPanel?.dispose();
+        Webview.currentPanel = undefined;
+    }
+
+    // OPTIONS
+    // -------
+
     /** Get the options for the webview */
     private static getOptions(extensionUri: vscode.Uri): vscode.WebviewOptions {
         return {
@@ -91,11 +111,12 @@ export class Webview {
         };
     }
 
-    // CONSTRUCTOR
-    // -----------
+    // --------
+    // INSTANCE
+    // --------
 
     private constructor(
-        private readonly panel: vscode.WebviewPanel,
+        public readonly panel: vscode.WebviewPanel,
         private readonly extensionUri: vscode.Uri
     ) {
         // Set the webview's initial html content
@@ -121,8 +142,7 @@ export class Webview {
     private disposables: vscode.Disposable[] = [];
 
     /** Dispose off the current panel and related disposables */
-    private dispose() {
-        Webview.currentPanel = undefined; // Unset current panel
+    public dispose() {
         this.panel.dispose();   // Dispose off the panel
         while (this.disposables.length) {
             const disposable = this.disposables.pop();
@@ -134,7 +154,6 @@ export class Webview {
 
     // MESSAGE
     // -------
-
 
     /** Handle messages from the webview */
     private handleMessage(message: ReceiveMessage) {
@@ -194,16 +213,3 @@ export class Webview {
 
 }
 
-// ----------------
-// TYPE DEFINITIONS
-// ----------------
-
-type SendMessage = {
-    command: 'update',
-    data: string[][]
-};
-
-type ReceiveMessage = {
-    command: 'error',
-    data: string
-};
