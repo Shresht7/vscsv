@@ -30,9 +30,25 @@ const extensionOptions = {
     external: ['vscode'],
 };
 
-// Build the extension
+/**
+ * Configuration for the webview source code. (to be run in the web-based context)
+ * @type {import('esbuild').BuildOptions}
+ */
+const webviewOptions = {
+    ...baseOptions,
+    target: "es2020",
+    format: "esm",
+    entryPoints: ["./src/views/webview/index.ts"],
+    outfile: "./out/webview.js",
+};
+
+// Build the extension and webview code
+const context = await esbuild.context({
+    ...extensionOptions,
+    ...webviewOptions,
+});
+
 const args = process.argv.slice(2);
-const context = await esbuild.context(extensionOptions);
 try {
     if (args.includes('--watch')) {
         await context.watch();
