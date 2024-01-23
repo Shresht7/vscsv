@@ -17,11 +17,11 @@ export class Commands {
     } as const;
 
     /** Boolean indicating whether or not the commands have been initialized */
-    private static _initialized = false;
+    private static initialized = false;
 
     /** Initialize all the commands for the extension */
     public static initialize(context: vscode.ExtensionContext) {
-        if (!this._initialized) { return; } // Exit early if already initialized
+        if (!this.initialized) { return; } // Exit early if already initialized
 
         context.subscriptions.push(
             ...Object.entries(this.commands).map(([name, command]) => {
@@ -30,7 +30,7 @@ export class Commands {
             })
         );
 
-        this._initialized = true; // Set the initialized flag
+        this.initialized = true; // Set the initialized flag
     }
 
     /** Get the fully qualified command ID */
