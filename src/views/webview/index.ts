@@ -18,6 +18,7 @@ function createRow(row: string[], isHeader: boolean) {
         // ... and create a table cell element for each
         const td = document.createElement(tagName);
         td.textContent = cell;
+        td.style.padding = '0.35rem 0.5rem';
         tr.appendChild(td);
     }
 
