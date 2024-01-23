@@ -15,8 +15,9 @@ import {
 	SyntaxHighlighting
 } from './providers';
 
-// Webview
-import { Webview } from './webview';
+// --------
+// ACTIVATE
+// --------
 
 /** This method is called when your extension is activated */
 export function activate(context: vscode.ExtensionContext) {
@@ -41,10 +42,11 @@ export function activate(context: vscode.ExtensionContext) {
 	// Register the semantic tokens provider provide syntax-highlighting
 	SyntaxHighlighting.initialize(context);
 
-	// Register the webview provider to provide table preview functionality
-	Webview.initialize(context);
-
 }
+
+// ----------
+// DEACTIVATE
+// ----------
 
 /** This method is called when your extension is deactivated */
 export function deactivate() { }
