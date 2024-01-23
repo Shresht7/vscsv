@@ -57,7 +57,7 @@ export class Webview {
     }
 
     /** Send a message to the webview */
-    public static postMessage<T>(message: Message<T>) {
+    public static postMessage<T>(message: SendMessage) {
         this.currentPanel?.panel.webview.postMessage(message);
     }
 
@@ -104,9 +104,9 @@ export class Webview {
 
 
     /** Handle messages from the webview */
-    private handleMessage(message: Message) {
+    private handleMessage(message: ReceiveMessage) {
         switch (message.command) {
-            case 'alert':
+            case 'error':
                 vscode.window.showErrorMessage(message.data);
                 return;
         }
@@ -166,7 +166,12 @@ export class Webview {
 // TYPE DEFINITIONS
 // ----------------
 
-type Message<T = string> = {
-    command: string
-    data: T
+type SendMessage = {
+    command: 'update',
+    data: string[][]
+};
+
+type ReceiveMessage = {
+    command: 'error',
+    data: string
 };

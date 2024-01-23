@@ -25,9 +25,6 @@ export function showPreview(context: vscode.ExtensionContext) {
     const { data } = parser.parse(document.getText());
 
     // Send the data to the webview
-    Webview.postMessage({
-        command: 'update',
-        data,
-    });
+    Webview.postMessage({ command: 'update', data });
 
 }
