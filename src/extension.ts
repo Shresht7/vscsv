@@ -2,7 +2,7 @@
 import * as vscode from 'vscode';
 import { Configuration } from './configuration';
 import { Commands } from './commands';
-import { Webview } from './views';
+import { Webview } from './webview';
 import {
 	Diagnostics,
 	DocumentSymbols,
