@@ -131,9 +131,7 @@ export class Webview {
     private getHtmlForWebview(): string {
 
         // Local path to script and css for the webview
-        const scriptUri = this.getWebviewUri('media', 'index.js');
-        const styleUri = this.getWebviewUri('media', 'vscode.css');
-        const cssResetUri = this.getWebviewUri('media', 'reset.css');
+        const scriptUri = this.getWebviewUri('out', 'webview.js');
 
         // Use a nonce to allow only specific scripts to run
         const nonce = generateNonce();
@@ -148,10 +146,7 @@ export class Webview {
                     Use a content security policy to only allow loading images from https or from our extension directory,
                     and only allow scripts that have a specific nonce.
                 -->
-                <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${this.panel.webview.cspSource}; img-src ${this.panel.webview.cspSource} https:; script-src 'nonce-${nonce}';">
-
-                <link href="${cssResetUri}" rel="stylesheet">
-				<link href="${styleUri}" rel="stylesheet">
+                <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${this.panel.webview.cspSource}; script-src 'nonce-${nonce}';">
 
                 <script type="module" nonce="${nonce}" src="${scriptUri}"></script>
 
