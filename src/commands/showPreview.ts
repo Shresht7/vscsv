@@ -1,7 +1,7 @@
 // Library
 import * as vscode from 'vscode';
 import { Webview } from '../views';
-import { Parser } from '../library';
+import { Parser, language } from '../library';
 
 // --------------------
 // SHOW PREVIEW COMMAND
@@ -16,11 +16,11 @@ export function showPreview(context: vscode.ExtensionContext) {
     // Render the webview
     Webview.render(context.extensionUri);
 
-    // Return early if the document is not a CSV or TSV file
-    if (!['csv', 'tsv'].includes(document.languageId)) { return; }
+    // Return early if the document is not a supported language
+    if (!language.isSupported(document.languageId)) { return; }
 
     // Parse the data
-    const delimiter = determineDelimiter(document);
+    const delimiter = language.getDelimiter(document.languageId);
     const parser = new Parser({ delimiter });
     const { data } = parser.parse(document.getText());
 
@@ -30,20 +30,4 @@ export function showPreview(context: vscode.ExtensionContext) {
         data,
     });
 
-}
-
-/**
- * Determines the delimiter for the document
- * @param document The document to determine the delimiter for
- * @returns The delimiter for the document
- */
-function determineDelimiter(document: vscode.TextDocument) {
-    switch (document.languageId) {
-        case 'csv':
-            return ',';
-        case 'tsv':
-            return '\t';
-        default:
-            return '';
-    }
 }
