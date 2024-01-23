@@ -1,6 +1,7 @@
 // Library
 import * as vscode from 'vscode';
-import { generateNonce, getWebviewOptions } from './utils';
+import { generateNonce } from './utils';
+import type { SendMessage, ReceiveMessage } from './types';
 
 // -------
 // WEBVIEW
@@ -8,28 +9,35 @@ import { generateNonce, getWebviewOptions } from './utils';
 
 export class Webview {
 
+    // ------
     // STATIC
     // ------
 
     /** The title of the webview panel */
-    private static readonly title = 'Webview';
+    private static readonly title = 'Table Preview';
 
     /** Identifies the type of the webview */
     public static readonly viewType = 'tablePreview';
 
+    /** The column in which the webview should appear */
+    private static readonly viewColumn = vscode.ViewColumn.Beside;
+
     /** Tracks the current panel. Only one is allowed to exist at a time */
     public static currentPanel: Webview | undefined;
+
+    // CREATE/  RENDER / REVIVE
+    // ------------------------
 
     /** Create a new panel */
     public static create(
         extensionUri: vscode.Uri,
-        viewColumn: vscode.ViewColumn = vscode.ViewColumn.One,
+        viewColumn: vscode.ViewColumn = this.viewColumn,
     ): Webview {
         const panel = vscode.window.createWebviewPanel(
             this.viewType,
             this.title,
             viewColumn,
-            getWebviewOptions(extensionUri),
+            this.getOptions(extensionUri),
         );
         return new Webview(panel, extensionUri);
     }
@@ -38,10 +46,7 @@ export class Webview {
      * Show the webview panel
      * The panel is created if it does not already exist
     */
-    public static render(extensionUri: vscode.Uri) {
-        // Determine the column to show the webview in
-        const viewColumn = vscode.window.activeTextEditor?.viewColumn ?? vscode.ViewColumn.One;
-
+    public static render(extensionUri: vscode.Uri, viewColumn: vscode.ViewColumn = this.viewColumn) {
         // If we already have a panel, show it
         if (Webview.currentPanel) {
             Webview.currentPanel.panel.reveal(viewColumn);
@@ -56,16 +61,33 @@ export class Webview {
         this.currentPanel = new Webview(panel, extensionUri);
     }
 
+    // MESSAGE
+    // -------
+
     /** Send a message to the webview */
-    public static postMessage<T>(message: Message<T>) {
+    public static postMessage(message: SendMessage) {
         this.currentPanel?.panel.webview.postMessage(message);
     }
 
+    // OPTIONS
+    // -------
+
+    /** Get the options for the webview */
+    private static getOptions(extensionUri: vscode.Uri): vscode.WebviewOptions {
+        return {
+            // Enable JavaScript in the webview
+            enableScripts: true,
+            // Restrict the webview to only loading content from our extension's `media` directory.
+            localResourceRoots: [vscode.Uri.joinPath(extensionUri, 'out')]
+        };
+    }
+
+    // --------
     // INSTANCE
     // --------
 
     private constructor(
-        private readonly panel: vscode.WebviewPanel,
+        public readonly panel: vscode.WebviewPanel,
         private readonly extensionUri: vscode.Uri
     ) {
         // Set the webview's initial html content
@@ -84,12 +106,15 @@ export class Webview {
         }, null, this.disposables);
     }
 
+    // DISPOSE
+    // -------
+
     /** A collection of disposables to dispose when the panel is disposed */
     private disposables: vscode.Disposable[] = [];
 
     /** Dispose off the current panel and related disposables */
-    private dispose() {
-        Webview.currentPanel = undefined; // Unset current panel
+    public dispose() {
+        Webview.currentPanel = undefined; // Set current panel to undefined
         this.panel.dispose();   // Dispose off the panel
         while (this.disposables.length) {
             const disposable = this.disposables.pop();
@@ -102,11 +127,10 @@ export class Webview {
     // MESSAGE
     // -------
 
-
     /** Handle messages from the webview */
-    private handleMessage(message: Message) {
+    private handleMessage(message: ReceiveMessage) {
         switch (message.command) {
-            case 'alert':
+            case 'error':
                 vscode.window.showErrorMessage(message.data);
                 return;
         }
@@ -117,7 +141,6 @@ export class Webview {
 
     /** Update the webview */
     private update() {
-        this.panel.title = "WEBVIEW";
         this.panel.webview.html = this.getHtmlForWebview();
     }
 
@@ -162,11 +185,3 @@ export class Webview {
 
 }
 
-// ----------------
-// TYPE DEFINITIONS
-// ----------------
-
-type Message<T = string> = {
-    command: string
-    data: T
-};

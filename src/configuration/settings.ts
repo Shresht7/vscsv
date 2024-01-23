@@ -8,6 +8,7 @@ export const Settings = {
     enableDocumentSymbols: true,
     enableHoverInformation: true,
     enableDiagnostics: true,
-} as const;
+};
 
+/** The valid configuration keys */
 export type SettingsKey = keyof typeof Settings;

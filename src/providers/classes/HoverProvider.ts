@@ -1,6 +1,6 @@
 // Library
 import * as vscode from 'vscode';
-import { Cell, VSCSV } from '../library';
+import { VSCSV } from '../../library';
 
 // --------------
 // HOVER PROVIDER

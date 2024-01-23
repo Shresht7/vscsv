@@ -1,42 +1,52 @@
 // Library
 import * as vscode from 'vscode';
+
+// Commands
+import { Commands } from './commands';
+
+// Configuration
 import { Configuration } from './configuration';
+
+// Providers
 import {
-	Commands,
 	Diagnostics,
-	DocumentSymbols,
 	HoverInformation,
-	SyntaxHighlighting,
-	Webview,
-} from './initializers';
+	Symbols,
+	SyntaxHighlighting
+} from './providers';
+
+// --------
+// ACTIVATE
+// --------
 
 /** This method is called when your extension is activated */
 export function activate(context: vscode.ExtensionContext) {
 
-	vscode.window.showInformationMessage('CSV Extension is now active!');
+	vscode.window.showInformationMessage('CSV Extension is now active!'); // TODO: Remove this when the extension is ready
 
-	// Register the configuration listeners
+	// Register the configuration manager
 	Configuration.initialize(context);
 
-	// Initialize Commands
+	// Register the extension commands
 	Commands.initialize(context);
 
-	// Register the semantic tokens provider for the CSV language to provide syntax highlighting
-	SyntaxHighlighting.initialize(context);
-
-	// Register the document symbol provider for the CSV language to provide symbol information
-	DocumentSymbols.initialize(context);
-
-	// Register the hover provider for the CSV language to provide hover information
-	HoverInformation.initialize(context);
-
-	// Register the diagnostics provider for the CSV language to provide diagnostics
+	// Register the diagnostics provider to provide diagnostics
 	Diagnostics.initialize(context);
 
-	// Register the webview serializer
-	Webview.initialize(context);
+	// Register the hover provider to provide hover information
+	HoverInformation.initialize(context);
+
+	// Register the document symbol provider to provide outline and go-to-symbol functionality
+	Symbols.initialize(context);
+
+	// Register the semantic tokens provider provide syntax-highlighting
+	SyntaxHighlighting.initialize(context);
 
 }
+
+// ----------
+// DEACTIVATE
+// ----------
 
 /** This method is called when your extension is deactivated */
 export function deactivate() { }

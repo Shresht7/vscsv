@@ -38,7 +38,7 @@ const webviewOptions = {
     ...baseOptions,
     target: "es2020",
     format: "esm",
-    entryPoints: ["./src/views/webview/index.ts"],
+    entryPoints: ["./src/webview/scripts/index.ts"],
     outfile: "./out/webview.js",
 };
 

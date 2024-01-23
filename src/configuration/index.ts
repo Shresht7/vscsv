@@ -18,24 +18,25 @@ export class Configuration {
      * @param name The name of the configuration key to get
      * @returns The value of the configuration key (or undefined if it does not exist)
      */
-    static get<K extends SettingsKey>(name: K): typeof Settings[K] | undefined {
+    public static get<K extends SettingsKey>(name: SettingsKey): typeof Settings[K] | undefined {
         return vscode.workspace.getConfiguration(EXTENSION_ID).get(name);
     }
 
     /** Map the configuration keys to callback functions that are called when the configuration is changed */
-    static Listeners = new Map<SettingsKey, Listener<any>>();
+    private static listeners = new Map<SettingsKey, Listener<any>>();
 
     /**
      * Register a listener for the given configuration key
      * @param name The name of the configuration key to listen to
      * @param listener The listener to register
      */
-    static registerListener<K extends SettingsKey>(name: K, listener: Listener<typeof Settings[K]>) {
-        this.Listeners.set(name, listener);
+    public static registerListener<K extends SettingsKey>(name: K, listener: Listener<typeof Settings[K]>) {
+        this.listeners.set(name, listener);
     }
 
     /** Initialize the configuration listeners */
-    static initialize(context: vscode.ExtensionContext) {
+    public static initialize(context: vscode.ExtensionContext) {
+        // Register the configuration change listener
         vscode.workspace.onDidChangeConfiguration((e) => {
 
             // Check if any of our configuration keys have changed ...
@@ -45,7 +46,7 @@ export class Configuration {
                 if (e.affectsConfiguration(id)) {
 
                     // ... and call the registered listener for that key
-                    const callback = this.Listeners.get(key);
+                    const callback = this.listeners.get(key);
                     const value = this.get(key);
                     callback?.(value);
 
@@ -55,7 +56,7 @@ export class Configuration {
         });
     }
 
-}
+};
 
 // -------------
 // UTILITY TYPES
