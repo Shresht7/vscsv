@@ -16,6 +16,9 @@
     "languages": [
       {
         "id": "csv",
+        "aliases": [
+          "CSV"
+        ],
         "extensions": [
           ".csv"
         ],
@@ -23,6 +26,9 @@
       },
       {
         "id": "tsv",
+        "aliases": [
+          "TSV"
+        ],
         "extensions": [
           ".tsv"
         ],
