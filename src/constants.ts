@@ -5,7 +5,7 @@
 /** The identifier of the extension */
 export const EXTENSION_ID = 'vscsv' as const;
 
-/** Supported Languages */
+/** Languages contributed by this extension */
 export const LANGUAGE = {
     CSV: 'csv',
     TSV: 'tsv',
