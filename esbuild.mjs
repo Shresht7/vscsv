@@ -43,37 +43,25 @@ const webviewOptions = {
 };
 
 // Build the extension and webview code
-const args = process.argv.slice(2);
 try {
 
-    // Get the esbuild context
-    const context = await esbuild.context({
-        ...extensionOptions,
-        ...webviewOptions,
-        // If the --watch flag is present, watch for changes ...
-        plugins: !isProduction
-            ? [{
-                name: 'watch',
-                setup(build) {
-                    build.onEnd(() => {
-                        console.log('Changes detected, rebuilding...');
-                    });
-                }
-            }]
-            : undefined,
-    });
+    // Get the esbuild contexts
+    const extensionContext = await esbuild.context(extensionOptions);
+    const webviewContext = await esbuild.context(webviewOptions);
 
-    if (args.includes('--watch')) {
-        // If the --watch flag is present, watch for changes ...
-        await context.watch();
-        console.log('Watching for changes...');
-    } else {
-        // ... otherwise, just build once
-        await context.rebuild();
-        // Dispose of the context to free up resources
-        await context.dispose();
-        console.log('Build finished');
-    }
+    // build
+    await Promise.all([
+        extensionContext.rebuild(),
+        webviewContext.rebuild(),
+    ]);
+
+    // Dispose
+    await Promise.all([
+        extensionContext.dispose(),
+        webviewContext.dispose(),
+    ]);
+
+    console.log('Build complete!');
 
 } catch (err) {
     process.stderr.write(err.message);
