@@ -2,7 +2,7 @@
 import * as vscode from 'vscode';
 import { Configuration } from './configuration';
 import { Commands } from './commands';
-import { DiagnosticsProvider } from './providers';
+import { Diagnostics } from './providers';
 import { Webview } from './webview';
 import {
 	DocumentSymbols,
@@ -22,7 +22,7 @@ export function activate(context: vscode.ExtensionContext) {
 	Commands.initialize(context);
 
 	// Register the diagnostics provider
-	DiagnosticsProvider.initialize(context);
+	Diagnostics.initialize(context);
 
 	// Register the semantic tokens provider for the CSV language to provide syntax highlighting
 	SyntaxHighlighting.initialize(context);
