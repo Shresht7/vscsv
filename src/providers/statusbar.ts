@@ -1,6 +1,7 @@
 // Library
 import * as vscode from 'vscode';
 import { language } from '../library/helpers';
+import { Parser, VSCSV } from '../library';
 
 // -------------------
 // STATUS BAR PROVIDER
@@ -21,16 +22,30 @@ export class StatusBar {
         context.subscriptions.push(this.item);
 
         if (vscode.window.activeTextEditor) {
-            this.update(vscode.window.activeTextEditor.document);
+            if (language.isSupported(vscode.window.activeTextEditor.document.languageId)) {
+                this.update(vscode.window.activeTextEditor.document);
+                this.show();
+            }
         }
+
+        vscode.window.onDidChangeTextEditorSelection((e) => {
+            e.selections.forEach((selection) => {
+                this.update(e?.textEditor.document);
+            });
+        });
 
         vscode.window.onDidChangeActiveTextEditor((e) => {
             if (!e) { return; }
-            this.update(e?.document);
+            if (language.isSupported(e.document.languageId)) {
+                this.show();
+            }
         });
 
         vscode.workspace.onDidOpenTextDocument((e) => {
-            this.update(e);
+            if (!e) { return; }
+            if (language.isSupported(e.languageId)) {
+                this.show();
+            }
         });
 
         vscode.workspace.onDidCloseTextDocument((e) => {
@@ -49,8 +64,13 @@ export class StatusBar {
             // Get cursor position
             const cursor = vscode.window.activeTextEditor?.selection.active;
             if (!cursor) { return; }
-            this.item.text = `Row ${cursor?.line + 1}, Col ${cursor?.character + 1}`;
-            this.item.show();
+            const r = cursor.line + 1;
+            const row = document.lineAt(cursor.line).text;
+            const cols = new VSCSV().parse(row).data[0];
+            const colIdx = cols.findIndex((col) => col.range.contains(new vscode.Position(0, cursor.character)));
+            const c = colIdx + 1;
+            // Update status bar item
+            this.item.text = `Row ${r}, Column ${c}`;
         }
     }
 
