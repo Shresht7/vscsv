@@ -1,6 +1,16 @@
 // Library
 import { Table } from "./table";
+import {
+    provideVSCodeDesignSystem,
+    vsCodeTextField,
+    vsCodeDivider
+} from '@vscode/webview-ui-toolkit';
 import type { VSCodeMessage, WebviewMessage } from "../types";
+
+provideVSCodeDesignSystem().register(
+    vsCodeTextField(),
+    vsCodeDivider()
+);
 
 // Get access to the VS Code API from within the webview context
 // @ts-ignore - The VS Code API is provided by vscode-webview api
@@ -23,10 +33,19 @@ window.addEventListener('load', () => {
 /** The class representing the html table */
 const table = new Table('table');
 
+/** The search input element */
+const search = document.getElementById('search') as HTMLInputElement;
+
 /** The main function */
 function main() {
     // Listen for messages from the main thread and render the table 
     window.addEventListener('message', handleMessageEvent);
+
+    // Listen for search input events and search the table
+    search.addEventListener('input', (e) => {
+        const query = (e.target as HTMLInputElement).value;
+        table.search(query);
+    });
 }
 
 // ---------------------
