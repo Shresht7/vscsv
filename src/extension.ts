@@ -12,7 +12,8 @@ import {
 	Diagnostics,
 	HoverInformation,
 	Symbols,
-	SyntaxHighlighting
+	SyntaxHighlighting,
+	StatusBar,
 } from './providers';
 
 // --------
@@ -41,6 +42,9 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// Register the semantic tokens provider provide syntax-highlighting
 	SyntaxHighlighting.initialize(context);
+
+	// Register the status bar provider to provide status bar information
+	StatusBar.initialize(context);
 
 }
 
