@@ -117,6 +117,7 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "esbuild": "^0.19.11"
+    "esbuild": "^0.19.11",
+    "fuse.js": "^7.0.0"
   }
 }

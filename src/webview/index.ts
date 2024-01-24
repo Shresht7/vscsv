@@ -184,6 +184,7 @@ export class Webview {
             </head>
 
             <body>
+                <input id="search" type="text" placeholder="Search...">
                 <table id="table"></table>
             </body>
         </html>

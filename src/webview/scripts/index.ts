@@ -23,10 +23,19 @@ window.addEventListener('load', () => {
 /** The class representing the html table */
 const table = new Table('table');
 
+/** The search input element */
+const search = document.getElementById('search') as HTMLInputElement;
+
 /** The main function */
 function main() {
     // Listen for messages from the main thread and render the table 
     window.addEventListener('message', handleMessageEvent);
+
+    // Listen for search input events and search the table
+    search.addEventListener('input', (e) => {
+        const query = (e.target as HTMLInputElement).value;
+        table.search(query);
+    });
 }
 
 // ---------------------

@@ -1,3 +1,6 @@
+// Library
+const Fuse = require('fuse.js');
+
 // -----
 // TABLE
 // -----
@@ -50,6 +53,16 @@ export class Table {
         for (const row of data) {
             this.element.appendChild(this.createRow(row, 'td'));
         }
+    }
+
+    /** Searches the table for the given query */
+    search(query: string) {
+        const fuse = new Fuse(this.data.map(x => "".concat(...x)), { threshold: 0.3 });
+        const results = fuse.search(query) as { item: string, refIndex: number, score: number }[];
+        const filteredData = results
+            .sort((a, b) => b.score - a.score)
+            .map(x => this.data[x.refIndex]);
+        this.render(filteredData);
     }
 
     //#endregion Rendering Logic
