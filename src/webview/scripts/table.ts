@@ -64,12 +64,12 @@ export class Table {
 
         // Setup the fuzzy search
         const lines = this.data.map(x => x.join(' '));
-        const fuse = new Fuse(lines, { threshold: 0.3 });
+        const fuse = new Fuse(lines, { threshold: 0.3, includeScore: true });
 
-        // Search the data and sort by score (descending)
+        // Search the data and sort by score (ascending)
         const results = fuse.search(query);
         const filteredData = results
-            .sort((a, b) => (b?.score ?? 0) - (a?.score ?? 0))
+            .sort((a, b) => (a?.score ?? 0) - (b?.score ?? 0))
             .map(x => this.data[x.refIndex]);
 
         // Render the filtered data
