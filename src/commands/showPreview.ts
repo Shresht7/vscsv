@@ -21,7 +21,7 @@ export async function showPreview(context: vscode.ExtensionContext) {
     if (!language.isSupported(document.languageId)) { return; }
 
     // Parse the data
-    const delimiter = language.getDelimiter(document.languageId);
+    const delimiter = language.delimiters[document.languageId];
     const parser = new Parser({ delimiter });
     const { data } = parser.parse(document.getText());
 

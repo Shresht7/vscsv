@@ -5,26 +5,16 @@ import { LANGUAGE } from "../../constants";
 // LANGUAGE
 // --------
 
-type SupportedLanguages = typeof LANGUAGE[keyof typeof LANGUAGE];
+/** The language (IDs) supported by the extension */
+export type SupportedLanguage = typeof LANGUAGE[keyof typeof LANGUAGE];
 
 /** Determines if the language is supported by the extension */
-export function isSupported(id: string): boolean {
-    const supportedLanguages = Object.values(LANGUAGE) as string[];
-    return supportedLanguages.includes(id);
+export function isSupported(id: string): id is SupportedLanguage {
+    return id in LANGUAGE;
 }
 
-/**
- * Determines the delimiter for the document
- * @param document The document to determine the delimiter for
- * @returns The delimiter for the document
- */
-export function getDelimiter(id: string): string | undefined {
-    switch (id) {
-        case 'csv':
-            return ',';
-        case 'tsv':
-            return '\t';
-        default:
-            return undefined;
-    }
-}
+/** Maps the language (IDs) to their corresponding delimiters */
+export const delimiters: Record<SupportedLanguage, string> = {
+    csv: ',',
+    tsv: '\t',
+};
