@@ -60,11 +60,17 @@ export class Table {
 
     /** Searches the table for the given query */
     search(query: string) {
-        const fuse = new Fuse(this.data.map(x => "".concat(...x)), { threshold: 0.3 });
+        // Setup the fuzzy search
+        const lines = this.data.map(x => x.join(' '));
+        const fuse = new Fuse(lines, { threshold: 0.3 });
+
+        // Search the data and sort by score (descending)
         const results = fuse.search(query) as { item: string, refIndex: number, score: number }[];
         const filteredData = results
             .sort((a, b) => b.score - a.score)
             .map(x => this.data[x.refIndex]);
+
+        // Render the filtered data
         this.render(filteredData);
     }
 
