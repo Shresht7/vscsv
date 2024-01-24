@@ -12,6 +12,7 @@
   ],
   "activationEvents": [],
   "main": "./out/extension.js",
+  "browser": "./out/extension.js",
   "contributes": {
     "languages": [
       {
@@ -98,7 +99,8 @@
     "watch": "node ./esbuild.mjs",
     "lint": "eslint src --ext ts",
     "pretest": "npm run compile && npm run lint",
-    "test": "vscode-test"
+    "test": "vscode-test",
+    "test-web": "vscode-test-web"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.6",
@@ -108,6 +110,7 @@
     "@typescript-eslint/parser": "^6.15.0",
     "@vscode/test-cli": "^0.0.4",
     "@vscode/test-electron": "^2.3.8",
+    "@vscode/test-web": "^0.0.50",
     "eslint": "^8.56.0",
     "typescript": "^5.3.3"
   },
