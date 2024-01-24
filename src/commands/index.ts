@@ -9,7 +9,7 @@ import { showPreview } from './showPreview';
 // COMMANDS
 // --------
 
-/** Responsible for registering and managing the commands for the extension. */
+/** Responsible for registering and managing the commands for the extension */
 export class Commands {
 
     /** All the commands for the extension */
@@ -36,5 +36,5 @@ export class Commands {
     public static execute(name: keyof typeof this.commands) {
         return vscode.commands.executeCommand(this.id(name));
     }
-}
 
+}
