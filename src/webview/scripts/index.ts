@@ -1,9 +1,9 @@
 // Library
 import { Table } from "./table";
-import type { VSCodeMessage } from "../types";
+import type { VSCodeMessage, WebviewMessage } from "../types";
 
 // Get access to the VS Code API from within the webview context
-// @ts-ignore
+// @ts-ignore - The VS Code API is provided by vscode-webview api
 const vscode = acquireVsCodeApi();
 
 // ---------
@@ -12,7 +12,7 @@ const vscode = acquireVsCodeApi();
 
 // Send a "ready" message to the main thread when the page loads and continue with main()
 window.addEventListener('load', () => {
-    vscode.postMessage({ command: 'ready' });
+    postMessage({ command: 'ready', data: true });
     main();
 });
 
@@ -37,4 +37,13 @@ function handleMessageEvent(event: MessageEvent<VSCodeMessage>) {
             table.update(message.data);
             break;
     }
+}
+
+// ----------------
+// HELPER FUNCTIONS
+// ----------------
+
+/** Helper function to enforce type safety when posting messages to the main thread */
+function postMessage(message: WebviewMessage) {
+    vscode.postMessage(message);
 }
