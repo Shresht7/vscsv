@@ -35,19 +35,19 @@ export class Table {
     }
 
     /** Renders the table */
-    render() {
+    render(data: string[][] = this.data) {
         // Return early if there is no data
-        if (this.data?.length < 1) { return; }
+        if (data?.length < 1) { return; }
 
         // Clear the table
         this.clear();
 
         // Create the header row
-        const headers = this.data.shift()!;
+        const headers = data.shift()!;
         this.element.appendChild(this.createRow(headers, 'th'));
 
         // Create the data rows
-        for (const row of this.data) {
+        for (const row of data) {
             this.element.appendChild(this.createRow(row, 'td'));
         }
     }
