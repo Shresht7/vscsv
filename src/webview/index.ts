@@ -1,7 +1,7 @@
 // Library
 import * as vscode from 'vscode';
 import { generateNonce } from './utils';
-import type { WebviewMessage } from './types';
+import type { VSCodeMessage, WebviewMessage } from './types';
 
 // -------
 // WEBVIEW
@@ -72,7 +72,7 @@ export class Webview {
     // -------
 
     /** Send a message to the webview */
-    public static postMessage(message: WebviewMessage) {
+    public static postMessage(message: VSCodeMessage) {
         this.currentPanel?.panel.webview.postMessage(message);
     }
 
