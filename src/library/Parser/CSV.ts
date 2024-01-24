@@ -19,7 +19,7 @@ export class CSV {
      * @returns A 2D array of strings
      */
     public static parse(doc: string): string[][] {
-        return this._parser.parse(doc).data;
+        return this._parser.parse(doc);
     }
 
     /**

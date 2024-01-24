@@ -76,9 +76,9 @@ export class DiagnosticsProvider {
     private getDiagnostics(document: vscode.TextDocument): vscode.Diagnostic[] {
         const diagnostics: vscode.Diagnostic[] = [];
 
-        const { headers, data } = this.parser.parse(document.getText());
+        const data = this.parser.parse(document.getText());
 
-        const colLength = headers.length;
+        const colLength = data.headers.length;
 
         for (const r in data) {
             const row = data[r];

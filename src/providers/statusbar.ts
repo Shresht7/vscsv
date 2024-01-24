@@ -66,7 +66,7 @@ export class StatusBar {
             if (!cursor) { return; }
             const r = cursor.line + 1;
             const row = document.lineAt(cursor.line).text;
-            const cols = new VSCSV().parse(row).data[0];
+            const cols = new VSCSV().parse(row)[0];
             const colIdx = cols.findIndex((col) => col.range.contains(new vscode.Position(0, cursor.character)));
             const c = colIdx + 1;
             // Update status bar item

@@ -23,7 +23,7 @@ export async function showPreview(context: vscode.ExtensionContext) {
     // Parse the data
     const delimiter = language.delimiters[document.languageId];
     const parser = new Parser({ delimiter });
-    const { data } = parser.parse(document.getText());
+    const data = parser.parse(document.getText());
 
     // Send the data to the webview
     Webview.postMessage({ command: 'update', data });

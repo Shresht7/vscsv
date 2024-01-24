@@ -8,20 +8,8 @@ type ViableCellTypes = string | { toString: () => string };
 /** Parses a string into a 2D array using the given delimiter */
 export abstract class _Parser<Cell extends ViableCellTypes = string> {
 
-    // PROPERTIES
-    // ----------
-
-    /** The 2D array of data */
-    public data: Cell[][] = [];
-
     /** The delimiter to use */
     protected delimiter: string;
-
-    /** The string to parse */
-    protected readonly doc: string;
-
-    // CONSTRUCTOR
-    // -----------
 
     /**
      * Instantiates a new {@link _Parser}
@@ -30,16 +18,13 @@ export abstract class _Parser<Cell extends ViableCellTypes = string> {
     constructor(opts?: {
         /** The delimiter to use (default: `,`) */
         delimiter?: string,
-        /** The string to parse */
-        doc?: string
     }) {
         this.delimiter = opts?.delimiter ?? ",";
-        this.doc = opts?.doc ?? "";
-        this.parse();
     }
 
-    // ABSTRACT METHODS
-    // ----------------
+    public setDelimiter(delimiter: string) {
+        this.delimiter = delimiter;
+    }
 
     /**
     * Parses a string value into a cell
@@ -48,54 +33,6 @@ export abstract class _Parser<Cell extends ViableCellTypes = string> {
     * @param lineNumber The line number of the cell being parsed
     */
     protected abstract parseCell(value: string, columnNumber?: number, lineNumber?: number): Cell;
-
-    // GETTERS & SETTERS
-    // -----------------
-
-    /** The column headers. The first row of the data */
-    get headers(): Cell[] {
-        return this.data[0];
-    }
-
-    // METHODS
-    // -------
-
-    /** Get the row at the given index */
-    getRow(index: number): Cell[] | undefined {
-        return this.data.at(index);
-    }
-
-    /** Get the column at the given index */
-    getColumn(index: number): (Cell | undefined)[] {
-        return this.data.map(row => row.at(index));
-    }
-
-    /**
-     * Gets the value of a cell
-     * @param row The row index of the cell
-     * @param column The column index of the cell
-     * @returns The value of the cell
-     */
-    getCell(row: number, column: number): Cell | undefined {
-        return this.data.at(row)?.at(column);
-    }
-
-    /**
-     * Perform a callback on each cell in the data
-     * @param callback The callback to call for each cell
-     */
-    forEachCell(callback: (cell: Cell, row: number, column: number) => void): void {
-        this.data.forEach((row, rowIndex) => {
-            row.forEach((cell, columnIndex) => {
-                callback(cell, rowIndex, columnIndex);
-            });
-        });
-    }
-
-    /** @returns the header corresponding to the given column number */
-    getHeader(column: number): Cell | undefined {
-        return this.headers.at(column);
-    }
 
     /**
      * Parses a line into an array of cells
@@ -152,11 +89,10 @@ export abstract class _Parser<Cell extends ViableCellTypes = string> {
 
     /**
      * Parses the document into a 2D array of {@link ViableCellTypes | cells}
-     * @param doc The document to parse. (can be omitted if the document was passed in the constructor)
+     * @param doc The document to parse
      */
-    public parse(doc: string = this.doc): this {
-        // Clear the data
-        this.data = [];
+    public parse(doc: string): Data<Cell> {
+        const data = new Data<Cell>();
 
         // Split the document into an array of lines
         const lines = doc.trim().split(/\r?\n/);
@@ -164,11 +100,10 @@ export abstract class _Parser<Cell extends ViableCellTypes = string> {
         // Iterate over each line and collect the cells
         for (let l = 0; l < lines.length; l++) {
             const cells: Cell[] = this.parseLine(lines[l], l);
-            this.data.push(cells);
+            data.push(cells);
         }
 
-        // Return this instance
-        return this;
+        return data;
     }
 
     /**
@@ -187,7 +122,7 @@ export abstract class _Parser<Cell extends ViableCellTypes = string> {
      * Serializes the data into a string
      * @param data The data to serialize to a string. Must be a 2-Dimensional array of {@link ViableCellTypes}s
      */
-    public serialize(data: Cell[][] = this.data): string {
+    public serialize(data: Cell[][]): string {
         return data.map(row => this.serializeLine(row)).join("\n");
     }
 
@@ -206,6 +141,62 @@ export class Parser extends _Parser<string> {
 
     protected parseCell(value: string): string {
         return value;
+    }
+
+}
+
+export class Data<Cell extends ViableCellTypes = string> extends Array<Cell[]> {
+
+    constructor() {
+        super();
+    }
+
+    // GETTERS & SETTERS
+    // -----------------
+
+    /** The column headers. The first row of the data */
+    get headers(): Cell[] {
+        return this[0];
+    }
+
+    // METHODS
+    // -------
+
+    /** Get the row at the given index */
+    getRow(index: number): Cell[] | undefined {
+        return this.at(index);
+    }
+
+    /** Get the column at the given index */
+    getColumn(index: number): (Cell | undefined)[] {
+        return this.map(row => row.at(index));
+    }
+
+    /**
+     * Gets the value of a cell
+     * @param row The row index of the cell
+     * @param column The column index of the cell
+     * @returns The value of the cell
+     */
+    getCell(row: number, column: number): Cell | undefined {
+        return this.at(row)?.at(column);
+    }
+
+    /**
+     * Perform a callback on each cell in the data
+     * @param callback The callback to call for each cell
+     */
+    forEachCell(callback: (cell: Cell, row: number, column: number) => void): void {
+        this.forEach((row, rowIndex) => {
+            row.forEach((cell, columnIndex) => {
+                callback(cell, rowIndex, columnIndex);
+            });
+        });
+    }
+
+    /** @returns the header corresponding to the given column number */
+    getHeader(column: number): Cell | undefined {
+        return this.headers.at(column);
     }
 
 }

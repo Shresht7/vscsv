@@ -71,7 +71,7 @@ export class DocumentSymbolProvider implements vscode.DocumentSymbolProvider {
         const csv = this.parser.parse(document.getText());
 
         // Iterate over the rows in the CSV document...
-        csv.data.forEach((row, r) => {
+        csv.forEach((row, r) => {
             if (!row.length) { return; } // Exit if the row is empty
 
             // Create a symbol for the row

@@ -54,8 +54,8 @@ export class HoverProvider implements vscode.HoverProvider {
         const csv = this.parser.parse(document.getText());
 
         // Iterate over the cells in the CSV document...
-        for (const r in csv.data) {
-            for (const c in csv.data[r]) {
+        for (const r in csv) {
+            for (const c in csv[r]) {
                 // ...get the cell...
                 const cell = csv.getCell(+r, +c);
                 if (!cell) { continue; } // Skip empty cells

@@ -18,105 +18,105 @@ suite('Parser', () => {
             test('should parse a CSV string with a single cell', () => {
                 const input = 'a';
                 const expected = [['a']];
-                const actual = new Parser().parse(input).data;
+                const actual = new Parser().parse(input);
                 assert.deepStrictEqual(actual, expected);
             });
 
             test('should parse a CSV string with multiple columns', () => {
                 const input = 'a,b,c';
                 const expected = [['a', 'b', 'c']];
-                const actual = new Parser().parse(input).data;
+                const actual = new Parser().parse(input);
                 assert.deepStrictEqual(actual, expected);
             });
 
             test('should parse a CSV string with multiple rows', () => {
                 const input = 'a\nb\nc';
                 const expected = [['a'], ['b'], ['c']];
-                const actual = new Parser().parse(input).data;
+                const actual = new Parser().parse(input);
                 assert.deepStrictEqual(actual, expected);
             });
 
             test('should parse a CSV string to a 2D array', () => {
                 const input = 'a,b,c\n1,2,3\nx,y,z';
                 const expected = [['a', 'b', 'c'], ['1', '2', '3'], ['x', 'y', 'z']];
-                const actual = new Parser().parse(input).data;
+                const actual = new Parser().parse(input);
                 assert.deepStrictEqual(actual, expected);
             });
 
             test('should parse a string with a different delimiter', () => {
                 const input = 'a;b;c\n1;2;3\nx;y;z';
                 const expected = [['a', 'b', 'c'], ['1', '2', '3'], ['x', 'y', 'z']];
-                const actual = new Parser({ delimiter: ';' }).parse(input).data;
+                const actual = new Parser({ delimiter: ';' }).parse(input);
                 assert.deepStrictEqual(actual, expected);
             });
 
             test('should parse a CSV string with empty columns', () => {
                 const input = 'a,b,,c';
                 const expected = [['a', 'b', '', 'c']];
-                const actual = new Parser().parse(input).data;
+                const actual = new Parser().parse(input);
                 assert.deepStrictEqual(actual, expected);
             });
 
             test('should parse a CSV string with empty lines', () => {
                 const input = 'a,b,c\n\n1,2,3';
                 const expected = [['a', 'b', 'c'], [''], ['1', '2', '3']];
-                const actual = new Parser().parse(input).data;
+                const actual = new Parser().parse(input);
                 assert.deepStrictEqual(actual, expected);
             });
 
             test('should parse a CSV string with different number of columns in each row', () => {
                 const input = 'a,b,c\nd,e\nf';
                 const expected = [['a', 'b', 'c'], ['d', 'e'], ['f']];
-                const actual = new Parser().parse(input).data;
+                const actual = new Parser().parse(input);
                 assert.deepStrictEqual(actual, expected);
             });
 
             test('should parse a empty CSV string', () => {
                 const input = '';
                 const expected = [['']];
-                const actual = new Parser().parse(input).data;
+                const actual = new Parser().parse(input);
                 assert.deepStrictEqual(actual, expected);
             });
 
             test('should parse a CSV string with a single cell that has quotes', () => {
                 const input = '"a"';
                 const expected = [['"a"']];
-                const actual = new Parser().parse(input).data;
+                const actual = new Parser().parse(input);
                 assert.deepStrictEqual(actual, expected);
             });
 
             test('should parse a CSV string with cells that have quotes', () => {
                 const input = '"a","b","c"\n"d","e","f"\n"g","h","i"';
                 const expected = [['"a"', '"b"', '"c"'], ['"d"', '"e"', '"f"'], ['"g"', '"h"', '"i"']];
-                const actual = new Parser().parse(input).data;
+                const actual = new Parser().parse(input);
                 assert.deepStrictEqual(actual, expected);
             });
 
             test('should parse a CSV string with quotes', () => {
                 const input = 'a,b,"c,d"';
                 const expected = [['a', 'b', '"c,d"']];
-                const actual = new Parser().parse(input).data;
+                const actual = new Parser().parse(input);
                 assert.deepStrictEqual(actual, expected);
             });
 
             test('should parse a CSV string with quotes and empty columns', () => {
                 const input = 'a,b,"",d';
                 const expected = [['a', 'b', '""', 'd']];
-                const actual = new Parser().parse(input).data;
+                const actual = new Parser().parse(input);
                 assert.deepStrictEqual(actual, expected);
             });
 
             test('should parse a CSV string with quotes around newlines', () => {
                 const input = 'a,b,"c\\\\nd"';
                 const expected = [['a', 'b', '"c\\nd"']];
-                const actual = new Parser().parse(input).data;
+                const actual = new Parser().parse(input);
                 assert.deepStrictEqual(actual, expected);
             });
 
             test('should parse a CSV string with quotes around quotes', () => {
                 const input = 'a,b,"""c"""';
                 const expected = [['a', 'b', '"""c"""']];
-                const actual = new Parser().parse(input).data;
+                const actual = new Parser().parse(input);
                 assert.deepStrictEqual(actual, expected);
             });
 
@@ -229,7 +229,7 @@ suite('Parser', () => {
             test('should be able to get the data', () => {
                 const input = 'a,b,c\n1,2,3\nx,y,z';
                 const expected = [['a', 'b', 'c'], ['1', '2', '3'], ['x', 'y', 'z']];
-                const actual = new Parser().parse(input).data;
+                const actual = new Parser().parse(input);
                 assert.deepStrictEqual(actual, expected);
             });
 
