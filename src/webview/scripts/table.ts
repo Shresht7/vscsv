@@ -60,6 +60,8 @@ export class Table {
 
     /** Searches the table for the given query */
     search(query: string) {
+        if (!query) { return this.render(); } // Return early if there is no query
+
         // Setup the fuzzy search
         const lines = this.data.map(x => x.join(' '));
         const fuse = new Fuse(lines, { threshold: 0.3 });
