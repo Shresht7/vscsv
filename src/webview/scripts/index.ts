@@ -1,6 +1,9 @@
 // Library
 import { Table } from "./table";
+import { provideVSCodeDesignSystem, vsCodeTextField } from '@vscode/webview-ui-toolkit';
 import type { VSCodeMessage, WebviewMessage } from "../types";
+
+provideVSCodeDesignSystem().register(vsCodeTextField());
 
 // Get access to the VS Code API from within the webview context
 // @ts-ignore - The VS Code API is provided by vscode-webview api
