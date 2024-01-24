@@ -28,7 +28,7 @@ export class Table {
         // Return early if there is no data
         if (data?.length < 1) { return; }
         this.data = data; // Update the data
-        this.headers = data[0]; // Update the headers
+        this.headers = data.shift()!; // Update the headers
         this.render(); // Render the table with the new data
     }
 
