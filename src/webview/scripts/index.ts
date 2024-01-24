@@ -29,6 +29,10 @@ function main() {
     window.addEventListener('message', handleMessageEvent);
 }
 
+// ---------------------
+// MESSAGE EVENT HANDLER
+// ---------------------
+
 /** Message Event Handler */
 function handleMessageEvent(event: MessageEvent<VSCodeMessage>) {
     const message = event.data;
