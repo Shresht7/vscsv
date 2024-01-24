@@ -20,11 +20,15 @@ export class Table {
     /** The data being represented */
     private data: string[][] = [];
 
+    /** The headers of the table */
+    private headers: string[] = [];
+
     /** Updates the table with the given data */
     update(data: string[][]) {
         // Return early if there is no data
         if (data?.length < 1) { return; }
         this.data = data; // Update the data
+        this.headers = data[0]; // Update the headers
         this.render(); // Render the table with the new data
     }
 
@@ -46,8 +50,7 @@ export class Table {
         this.clear();
 
         // Create the header row
-        const headers = data.shift()!;
-        this.element.appendChild(this.createRow(headers, 'th'));
+        this.element.appendChild(this.createRow(this.headers, 'th'));
 
         // Create the data rows
         for (const row of data) {
