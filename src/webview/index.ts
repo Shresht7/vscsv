@@ -185,6 +185,7 @@ export class Webview {
 
             <body>
                 <vscode-text-field id="search" type="text" placeholder="Search..."></vscode-text-field>
+                <vscode-divider role="presentation"></vscode-divider>
                 <table id="table"></table>
             </body>
         </html>
