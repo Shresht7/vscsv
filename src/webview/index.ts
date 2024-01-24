@@ -46,7 +46,7 @@ export class Webview {
      * Show the webview panel
      * The panel is created if it does not already exist
     */
-    public static render(extensionUri: vscode.Uri, viewColumn: vscode.ViewColumn = this.viewColumn) {
+    public static render(extensionUri: vscode.Uri, viewColumn: vscode.ViewColumn = this.viewColumn): Promise<void> {
         // If we already have a panel, show it
         if (Webview.currentPanel) {
             Webview.currentPanel.panel.reveal(viewColumn);
@@ -54,6 +54,13 @@ export class Webview {
             // Otherwise, create a new panel
             this.currentPanel = this.create(extensionUri, viewColumn);
         }
+
+        // Return a promise that resolves when the webview sends a "ready" message (on page load)
+        return new Promise((resolve, reject) => {
+            this.currentPanel?.panel.webview.onDidReceiveMessage((message: ReceiveMessage) => {
+                if (message.command === 'ready') { resolve(); } else { reject(); }
+            }, null, this.currentPanel?.disposables);
+        });
     }
 
     /** Revive the webview panel */

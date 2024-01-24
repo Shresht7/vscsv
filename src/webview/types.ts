@@ -10,4 +10,7 @@ export type SendMessage = {
 export type ReceiveMessage = {
     command: 'error',
     data: string
+} | {
+    command: 'ready'
+    data: boolean
 };

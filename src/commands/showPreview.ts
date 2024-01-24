@@ -9,13 +9,13 @@ import { language } from '../library/helpers';
 // --------------------
 
 /** Opens a preview window for the CSV file. */
-export function showPreview(context: vscode.ExtensionContext) {
+export async function showPreview(context: vscode.ExtensionContext) {
 
     const document = vscode.window.activeTextEditor?.document;
     if (!document) { return; } // Exit early if no document is open
 
     // Render the webview
-    Webview.render(context.extensionUri);
+    await Webview.render(context.extensionUri);
 
     // Return early if the document is not a supported language
     if (!language.isSupported(document.languageId)) { return; }
