@@ -1,7 +1,7 @@
 // Library
 import * as vscode from 'vscode';
 import { generateNonce } from './utils';
-import type { WebviewMessage, WebviewMessage } from './types';
+import type { WebviewMessage } from './types';
 
 // -------
 // WEBVIEW
