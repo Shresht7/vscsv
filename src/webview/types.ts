@@ -2,12 +2,12 @@
 // TYPE DEFINITIONS
 // ----------------
 
-export type SendMessage = {
+export type VSCodeMessage = {
     command: 'update',
     data: string[][]
 };
 
-export type ReceiveMessage = {
+export type WebviewMessage = {
     command: 'error',
     data: string
 } | {

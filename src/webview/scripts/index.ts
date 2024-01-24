@@ -1,6 +1,6 @@
 // Library
 import { Table } from "./table";
-import type { SendMessage } from "../types";
+import type { VSCodeMessage } from "../types";
 
 // Get access to the VS Code API from within the webview context
 // @ts-ignore
@@ -30,7 +30,7 @@ function main() {
 }
 
 /** Message Event Handler */
-function handleMessageEvent(event: MessageEvent<SendMessage>) {
+function handleMessageEvent(event: MessageEvent<VSCodeMessage>) {
     const message = event.data;
     switch (message.command) {
         case 'update':

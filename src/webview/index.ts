@@ -1,7 +1,7 @@
 // Library
 import * as vscode from 'vscode';
 import { generateNonce } from './utils';
-import type { SendMessage, ReceiveMessage } from './types';
+import type { WebviewMessage, WebviewMessage } from './types';
 
 // -------
 // WEBVIEW
@@ -57,7 +57,7 @@ export class Webview {
 
         // Return a promise that resolves when the webview sends a "ready" message (on page load)
         return new Promise((resolve, reject) => {
-            this.currentPanel?.panel.webview.onDidReceiveMessage((message: ReceiveMessage) => {
+            this.currentPanel?.panel.webview.onDidReceiveMessage((message: WebviewMessage) => {
                 if (message.command === 'ready') { resolve(); } else { reject(); }
             }, null, this.currentPanel?.disposables);
         });
@@ -72,7 +72,7 @@ export class Webview {
     // -------
 
     /** Send a message to the webview */
-    public static postMessage(message: SendMessage) {
+    public static postMessage(message: WebviewMessage) {
         this.currentPanel?.panel.webview.postMessage(message);
     }
 
@@ -135,7 +135,7 @@ export class Webview {
     // -------
 
     /** Handle messages from the webview */
-    private handleMessage(message: ReceiveMessage) {
+    private handleMessage(message: WebviewMessage) {
         switch (message.command) {
             case 'error':
                 vscode.window.showErrorMessage(message.data);
