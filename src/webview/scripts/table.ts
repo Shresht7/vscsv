@@ -12,27 +12,50 @@ export class Table {
         this.element = document.getElementById(id) as HTMLTableElement;
     }
 
+    //#region Data Handling
+
+    /** The data being represented */
+    private data: string[][] = [];
+
+    /** Updates the table with the given data */
+    update(data: string[][]) {
+        // Return early if there is no data
+        if (data?.length < 1) { return; }
+        this.data = data; // Update the data
+        this.render(); // Render the table with the new data
+    }
+
+    //#endregion
+
+    //#region Rendering Logic
+
     /** Clears the table */
     clear() {
         this.element.innerHTML = '';
     }
 
-    /** Updates the table with the given data */
-    update(data: string[][]) {
+    /** Renders the table */
+    render() {
+        // Return early if there is no data
+        if (this.data?.length < 1) { return; }
+
+        // Clear the table
         this.clear();
 
-        // Return early if there is no data
-        if (data?.length < 1) { return; }
-
         // Create the header row
-        const headers = data.shift()!;
+        const headers = this.data.shift()!;
         this.element.appendChild(this.createRow(headers, 'th'));
 
         // Create the data rows
-        for (const row of data) {
+        for (const row of this.data) {
             this.element.appendChild(this.createRow(row, 'td'));
         }
     }
+
+    //#endregion Rendering Logic
+
+    //#region Helper Functions
+
     /** Creates a table row */
     private createRow(row: string[], tagName: 'th' | 'td' = 'td') {
         const tr = document.createElement('tr');
@@ -49,5 +72,7 @@ export class Table {
         td.style.padding = '0.35rem 0.5rem';
         return td;
     }
+
+    //#endregion Helper Functions
 
 }
