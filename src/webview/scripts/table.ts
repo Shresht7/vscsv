@@ -1,5 +1,5 @@
 // Library
-const Fuse = require('fuse.js');
+import Fuse from 'fuse.js';
 
 // -----
 // TABLE
@@ -67,9 +67,9 @@ export class Table {
         const fuse = new Fuse(lines, { threshold: 0.3 });
 
         // Search the data and sort by score (descending)
-        const results = fuse.search(query) as { item: string, refIndex: number, score: number }[];
+        const results = fuse.search(query);
         const filteredData = results
-            .sort((a, b) => b.score - a.score)
+            .sort((a, b) => (b?.score ?? 0) - (a?.score ?? 0))
             .map(x => this.data[x.refIndex]);
 
         // Render the filtered data
