@@ -11,7 +11,7 @@ const isProduction = process.env.NODE_ENV === 'production';
  * @type {import('esbuild').BuildOptions}
 */
 const baseOptions = {
-    bundle: true,
+    bundle: true,   // Bundle all dependencies into a single file
     minify: isProduction, // Minify in production
     sourcemap: !isProduction, // Generate sourcemaps in development
 };
