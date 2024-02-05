@@ -23,7 +23,7 @@ export class Configuration {
     }
 
     /** Map the configuration keys to callback functions that are called when the configuration is changed */
-    private static listeners = new Map<SettingsKey, Listener<any>>();
+    private static listeners: Partial<Record<SettingsKey, Listener<any>>> = {};
 
     /**
      * Register a listener for the given configuration key
@@ -31,11 +31,12 @@ export class Configuration {
      * @param listener The listener to register
      */
     public static registerListener<K extends SettingsKey>(name: K, listener: Listener<typeof Settings[K]>) {
-        this.listeners.set(name, listener);
+        this.listeners[name] = listener;
     }
 
     /** Initialize the configuration listeners */
     public static initialize(context: vscode.ExtensionContext) {
+
         // Register the configuration change listener
         vscode.workspace.onDidChangeConfiguration((e) => {
 
@@ -46,7 +47,7 @@ export class Configuration {
                 if (e.affectsConfiguration(id)) {
 
                     // ... and call the registered listener for that key
-                    const callback = this.listeners.get(key);
+                    const callback = this.listeners[key];
                     const value = this.get(key);
                     callback?.(value);
 
@@ -54,6 +55,7 @@ export class Configuration {
             }
 
         });
+
     }
 
 };
