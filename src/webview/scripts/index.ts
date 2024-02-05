@@ -24,6 +24,8 @@ const vscode = acquireVsCodeApi();
 // Send a "ready" message to the main thread when the page loads and continue with main()
 window.addEventListener('load', () => {
     postMessage({ command: 'ready', data: true });
+    const data = vscode.getState()?.data;
+    if (data) { table.update(data); }
     main();
 });
 
@@ -59,6 +61,7 @@ function handleMessageEvent(event: MessageEvent<VSCodeMessage>) {
     switch (message.command) {
         case 'update':
             table.update(message.data);
+            vscode.setState({ data: message.data });
             break;
     }
 }
