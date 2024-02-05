@@ -1,7 +1,7 @@
 {
   "name": "vscsv",
   "displayName": "vscsv",
-  "description": "VS Code features for CSV and TSV files",
+  "description": "VS Code extension for CSV/TSV language support",
   "author": "Shresht7",
   "publisher": "Shresht7",
   "version": "0.0.1",
@@ -41,7 +41,7 @@
     "commands": [
       {
         "command": "vscsv.showPreview",
-        "title": "Open Table Preview",
+        "title": "Show Table Preview",
         "category": "VSCSV",
         "icon": "$(open-preview)"
       }
@@ -68,7 +68,7 @@
         "vscsv.enableSyntaxHighlighting": {
           "type": "boolean",
           "default": true,
-          "description": "Enable/disable syntax highlighting in csv/tsv files"
+          "description": "Enable/disable syntax highlighting for columns in csv/tsv files"
         },
         "vscsv.enableDocumentSymbols": {
           "type": "boolean",
