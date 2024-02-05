@@ -1,11 +1,11 @@
 // Library
 import * as vscode from 'vscode';
 
-// Commands
-import { Commands } from './commands';
-
 // Configuration
 import { Configuration } from './configuration';
+
+// Commands
+import { Commands } from './commands';
 
 // Providers
 import {
