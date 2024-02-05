@@ -5,6 +5,7 @@ import Fuse from 'fuse.js';
 // TABLE
 // -----
 
+/** The class representing the html table element */
 export class Table {
 
     /** The HTML table element */
@@ -15,9 +16,10 @@ export class Table {
         this.element = document.getElementById(id) as HTMLTableElement;
     }
 
-    //#region Data Handling
+    // DATA HANDLING
+    // -------------
 
-    /** The data being represented */
+    /** The data to be represented as a table */
     private data: string[][] = [];
 
     /** The headers of the table */
@@ -25,23 +27,21 @@ export class Table {
 
     /** Updates the table with the given data */
     update(data: string[][]) {
-        // Return early if there is no data
-        if (data?.length < 1) { return; }
-        this.headers = data[0]; // Update the headers
-        this.data = data.slice(1); // Update the data
-        this.render(); // Render the table with the new data
+        if (data?.length < 1) { return; }   // Return early if there is no data
+        this.headers = data[0];             // Use the first row as the headers
+        this.data = data.slice(1);          // Use the rest as the table data
+        this.render();                      // Render the html table
     }
 
-    //#endregion
-
-    //#region Rendering Logic
+    // RENDERING LOGIC
+    // ---------------
 
     /** Clears the table */
     clear() {
         this.element.innerHTML = '';
     }
 
-    /** Renders the table */
+    /** Renders the html table */
     render(data: string[][] = this.data) {
         // Return early if there is no data
         if (data?.length < 1) { return; }
@@ -58,9 +58,9 @@ export class Table {
         }
     }
 
-    /** Searches the table for the given query */
+    /** Searches the table for the given query and filter the rows */
     search(query: string) {
-        if (!query) { return this.render(); } // Return early if there is no query
+        if (!query) { return this.render(); } // Return early if there is no query and render the table as is
 
         // Setup the fuzzy search
         const lines = this.data.map(x => x.join(' '));
@@ -69,16 +69,17 @@ export class Table {
         // Search the data and sort by score (ascending)
         const results = fuse.search(query);
         const filteredData = results
+            // sort the elements of the array in ascending order based on their score property,
+            // treating elements with a null, undefined, or missing score property as if their score was 0.
             .sort((a, b) => (a?.score ?? 0) - (b?.score ?? 0))
-            .map(x => this.data[x.refIndex]);
+            .map(x => this.data[x.refIndex]); // Get the data row for the given reference index (sorted by score)
 
         // Render the filtered data
         this.render(filteredData);
     }
 
-    //#endregion Rendering Logic
-
-    //#region Helper Functions
+    // HELPER FUNCTIONS
+    // ----------------
 
     /** Creates a table row */
     private createRow(row: string[], tagName: 'th' | 'td' = 'td') {
@@ -96,7 +97,5 @@ export class Table {
         td.style.padding = '0.35rem 0.5rem';
         return td;
     }
-
-    //#endregion Helper Functions
 
 }
