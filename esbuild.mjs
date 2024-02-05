@@ -2,6 +2,8 @@
 
 // Library
 import * as esbuild from 'esbuild';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 
 /** Boolean indicating whether the current build is for production. */
 const isProduction = process.env.NODE_ENV === 'production';
@@ -42,6 +44,13 @@ const webviewOptions = {
     outfile: "./out/webview.js",
 };
 
+/** Copy the stylesheet to the out directory */
+function copyStyles() {
+    const stylesPath = path.join("./", "src", "webview", "styles", "style.css");
+    const outputPath = path.join("./", "out", "style.css");
+    fs.copyFileSync(stylesPath, outputPath);
+}
+
 // Build the extension and webview code
 try {
 
@@ -60,6 +69,9 @@ try {
         extensionContext.dispose(),
         webviewContext.dispose(),
     ]);
+
+    // Copy Styles
+    copyStyles();
 
     console.log('Build complete!');
 
