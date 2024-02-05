@@ -7,6 +7,7 @@ import {
 } from '@vscode/webview-ui-toolkit';
 import type { VSCodeMessage, WebviewMessage } from "../types";
 
+// Register the VS Code Design System components
 provideVSCodeDesignSystem().register(
     vsCodeTextField(),
     vsCodeDivider()
