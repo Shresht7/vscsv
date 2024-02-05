@@ -123,11 +123,6 @@ export class Webview {
 
         // Handle messages from the webview
         this.panel.webview.onDidReceiveMessage(this.handleMessage, null, this.disposables);
-
-        // Update the content based on the view changes
-        this.panel.onDidChangeViewState(e => {
-            if (this.panel.visible) { this.update(); }
-        }, null, this.disposables);
     }
 
     // DISPOSE
