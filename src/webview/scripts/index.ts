@@ -25,10 +25,11 @@ const vscode = acquireVsCodeApi();
 // PAGE LOAD
 // ---------
 
-// Send a "ready" message to the main thread when the page loads and continue with main()
+// Event: Page Load
 window.addEventListener('load', () => {
-    postMessage({ command: 'ready', data: true });
-    main();
+    postMessage({ command: 'ready', data: true }); // Notify the main thread that the webview is ready
+    main(); // Call the main function
+    // Restore the table state if it exists
     const state = vscode.getState();
     if (state) { table.update(state.data); }
 });
@@ -45,7 +46,7 @@ const search = document.getElementById('search') as HTMLInputElement;
 
 /** The main function */
 function main() {
-    // Listen for messages from the main thread and render the table 
+    // Listen for messages from the main thread
     window.addEventListener('message', handleMessageEvent);
 
     // Listen for search input events and search the table
@@ -64,8 +65,8 @@ function handleMessageEvent(event: MessageEvent<VSCodeMessage>) {
     const message = event.data;
     switch (message.command) {
         case 'update':
-            table.update(message.data);
-            vscode.setState({ data: message.data });
+            table.update(message.data); // Update the table with new data
+            vscode.setState({ data: message.data }); // Save the table state
             break;
     }
 }
