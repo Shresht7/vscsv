@@ -14,11 +14,11 @@ export async function showPreview(context: vscode.ExtensionContext) {
     const document = vscode.window.activeTextEditor?.document;
     if (!document) { return; } // Exit early if no document is open
 
-    // Render the webview
-    await Webview.render(context.extensionUri);
-
     // Return early if the document is not a supported language
     if (!language.isSupported(document.languageId)) { return; }
+
+    // Render the webview
+    await Webview.render(context.extensionUri);
 
     // Parse the data
     const delimiter = language.delimiters[document.languageId];
