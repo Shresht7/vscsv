@@ -11,9 +11,9 @@ import { Configuration } from './configuration';
 import {
 	Diagnostics,
 	HoverInformation,
+	StatusBar,
 	Symbols,
 	SyntaxHighlighting,
-	StatusBar,
 } from './providers';
 
 // --------
