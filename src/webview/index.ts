@@ -200,14 +200,16 @@ export class Webview {
             </head>
 
             <body>
-                <header>
-                    <label for="search">Search</label>
-                    <vscode-text-field id="search" type="text" placeholder="Search..."></vscode-text-field>
-                </header>
-                    <vscode-divider role="presentation"></vscode-divider>
                 <main>
                     <table id="table"></table>
                 </main>
+                <footer>
+                    <vscode-divider role="presentation"></vscode-divider>
+                    <div id="search-input-container">
+                        <label for="search">Search</label>
+                        <vscode-text-field id="search" type="text" placeholder="Search..."></vscode-text-field>
+                    </div>
+                </footer>
             </body>
         </html>
         `;
