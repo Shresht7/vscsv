@@ -1,16 +1,20 @@
 // Library
 import { Table } from "./table";
+
+// VS Code Webview UI Toolkit Components
 import {
     provideVSCodeDesignSystem,
+    vsCodeDivider,
     vsCodeTextField,
-    vsCodeDivider
 } from '@vscode/webview-ui-toolkit';
+
+// Type Definitions
 import type { VSCodeMessage, WebviewMessage } from "../types";
 
 // Register the VS Code Design System components
 provideVSCodeDesignSystem().register(
+    vsCodeDivider(),
     vsCodeTextField(),
-    vsCodeDivider()
 );
 
 // Get access to the VS Code API from within the webview context
