@@ -19,7 +19,7 @@ export class Webview {
     /** Identifies the type of the webview */
     public static readonly viewType = 'tablePreview';
 
-    /** The column in which the webview should appear */
+    /** The column in which the webview should appear. (See {@linkcode vscode.ViewColumn}) */
     private static readonly viewColumn = vscode.ViewColumn.Beside;
 
     /** Tracks the current panel. Only one is allowed to exist at a time */
@@ -28,7 +28,13 @@ export class Webview {
     // CREATE/  RENDER / REVIVE
     // ------------------------
 
-    /** Create a new panel */
+    /** Create a new panel.
+     * The panel is not shown until the {@linkcode render} method is called.
+     * @param extensionUri The uri of the extension
+     * @param viewColumn The column in which the webview should appear (default: `Beside`)
+     * @returns A {@linkcode Webview} panel
+     * @see {@link vscode.ViewColumn}
+    */
     public static create(
         extensionUri: vscode.Uri,
         viewColumn: vscode.ViewColumn = this.viewColumn,
@@ -42,30 +48,54 @@ export class Webview {
         return new Webview(panel, extensionUri);
     }
 
-    /**
-     * Show the webview panel
-     * The panel is created if it does not already exist
+    /** Show the webview panel.
+     * The panel is created if it does not already exist.
+     * @param extensionUri The uri of the extension
+     * @param viewColumn The column in which the webview should appear (default: `Beside`)
+     * @returns A promise that resolves when the webview sends a "ready" message (on page load)
+     * @see {@linkcode vscode.ViewColumn}
     */
-    public static render(extensionUri: vscode.Uri, viewColumn: vscode.ViewColumn = this.viewColumn): Promise<void> {
-        // If we already have a panel, show it
+    public static render(
+        extensionUri: vscode.Uri,
+        viewColumn: vscode.ViewColumn = this.viewColumn
+    ): Promise<void> {
+        // If we already have a panel...
         if (Webview.currentPanel) {
+            // ...reveal the panel
             Webview.currentPanel.panel.reveal(viewColumn);
         } else {
-            // Otherwise, create a new panel
+            // ...Otherwise, create a new panel
             this.currentPanel = this.create(extensionUri, viewColumn);
         }
 
         // Return a promise that resolves when the webview sends a "ready" message (on page load)
         return new Promise((resolve, reject) => {
             this.currentPanel?.panel.webview.onDidReceiveMessage((message: WebviewMessage) => {
-                if (message.command === 'ready') { resolve(); } else { reject(); }
+                if (message.command === 'ready') { resolve(); } else { reject(); } // ? Might be a good place to request for data
             }, null, this.currentPanel?.disposables);
         });
     }
 
-    /** Revive the webview panel */
+    /** Revive the webview panel
+     * @param panel The webview panel to revive
+     * @param extensionUri The uri of the extension
+     * @see {@linkcode Webview}
+    */
     public static revive(panel: vscode.WebviewPanel, extensionUri: vscode.Uri) {
         this.currentPanel = new Webview(panel, extensionUri);
+    }
+
+    // OPTIONS
+    // -------
+
+    /** Get the webview options for the webview. See ({@linkcode vscode.WebviewOptions}) */
+    private static getOptions(extensionUri: vscode.Uri): vscode.WebviewOptions {
+        return {
+            // Enable JavaScript in the webview
+            enableScripts: true,
+            // Restrict the webview to only loading content from our extension's `media` directory.
+            localResourceRoots: [vscode.Uri.joinPath(extensionUri, 'out')]
+        };
     }
 
     // MESSAGE
@@ -74,19 +104,6 @@ export class Webview {
     /** Send a message to the webview */
     public static postMessage(message: VSCodeMessage) {
         this.currentPanel?.panel.webview.postMessage(message);
-    }
-
-    // OPTIONS
-    // -------
-
-    /** Get the options for the webview */
-    private static getOptions(extensionUri: vscode.Uri): vscode.WebviewOptions {
-        return {
-            // Enable JavaScript in the webview
-            enableScripts: true,
-            // Restrict the webview to only loading content from our extension's `media` directory.
-            localResourceRoots: [vscode.Uri.joinPath(extensionUri, 'out')]
-        };
     }
 
     // --------
@@ -138,6 +155,7 @@ export class Webview {
     private handleMessage(message: WebviewMessage) {
         switch (message.command) {
             case 'error':
+                // In case of an error, show a vscode error message
                 vscode.window.showErrorMessage(message.data);
                 return;
         }
