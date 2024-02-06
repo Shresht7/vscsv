@@ -50,30 +50,6 @@
         "priority": "option"
       }
     ],
-    "commands": [
-      {
-        "command": "vscsv.showPreview",
-        "title": "Show Table Preview",
-        "category": "VSCSV",
-        "icon": "$(open-preview)"
-      }
-    ],
-    "menus": {
-      "commandPalette": [
-        {
-          "command": "vscsv.showPreview",
-          "when": "editorLangId == csv || editorLangId == tsv",
-          "group": "VSCSV"
-        }
-      ],
-      "editor/title": [
-        {
-          "command": "vscsv.showPreview",
-          "when": "editorLangId == csv || editorLangId == tsv",
-          "group": "navigation"
-        }
-      ]
-    },
     "configuration": {
       "title": "VSCSV",
       "properties": {

@@ -4,9 +4,6 @@ import * as vscode from 'vscode';
 // Configuration
 import { Configuration } from './configuration';
 
-// Commands
-import { Commands } from './commands';
-
 // Providers
 import {
 	Diagnostics,
@@ -28,9 +25,6 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// Register the configuration manager
 	Configuration.initialize(context);
-
-	// Register the extension commands
-	Commands.initialize(context);
 
 	// Register the diagnostics provider to provide diagnostics
 	Diagnostics.initialize(context);
