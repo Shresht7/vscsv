@@ -33,25 +33,25 @@ const extensionOptions = {
 };
 
 /**
- * Configuration for the webview source code. (to be run in the web-based context)
+ * Configuration for the editor webview source code. (to be run in the web-based context)
  * @type {import('esbuild').BuildOptions}
  */
 const webviewOptions = {
     ...baseOptions,
     target: "es2020",
     format: "esm",
-    entryPoints: ["./src/webview/scripts/index.ts"],
+    entryPoints: ["./src/editor/scripts/index.ts"],
     outfile: "./out/webview.js",
 };
 
 /** Copy the stylesheet to the out directory */
 function copyStyles() {
-    const stylesPath = path.join("./", "src", "webview", "styles", "style.css");
+    const stylesPath = path.join("./", "src", "editor", "styles", "style.css");
     const outputPath = path.join("./", "out", "style.css");
     fs.copyFileSync(stylesPath, outputPath);
 }
 
-// Build the extension and webview code
+// Build the extension and editor webview code
 try {
 
     // Get the esbuild contexts

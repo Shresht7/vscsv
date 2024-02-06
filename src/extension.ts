@@ -12,7 +12,9 @@ import {
 	Symbols,
 	SyntaxHighlighting,
 } from './providers';
-import { CustomTextEditor } from './webview';
+
+// Custom Text Editor
+import { CustomTextEditor } from './editor';
 
 // --------
 // ACTIVATE
