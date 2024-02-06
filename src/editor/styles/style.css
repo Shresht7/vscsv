@@ -9,13 +9,18 @@ body {
 footer {
     position: absolute;
     width: 95%;
-    bottom: 1rem;
+    bottom: 0.5rem;
 }
 
 #search-input-container {
+    margin-top: 0.5rem;
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
     gap: 0.5rem;
+}
+
+vscode-text-field#search {
+    width: 100%;
 }
