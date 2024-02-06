@@ -33,6 +33,7 @@ export class CustomTextEditor implements vscode.CustomTextEditorProvider {
                 new CustomTextEditor(context),
                 {
                     webviewOptions: {
+                        enableFindWidget: true, // Enable the find widget in the webview
                         retainContextWhenHidden: true // Retain the webview's context when it is hidden
                     }
                 }
