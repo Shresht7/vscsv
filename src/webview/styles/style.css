@@ -24,3 +24,7 @@ footer {
 vscode-text-field#search {
     width: 100%;
 }
+
+th {
+    border-bottom: 2px solid whitesmoke;
+}
