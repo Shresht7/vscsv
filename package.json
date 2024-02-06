@@ -38,6 +38,18 @@
         "configuration": "./language-configuration.json"
       }
     ],
+    "customEditors": [
+      {
+        "viewType": "vscsv.csvEditor",
+        "displayName": "CSV Editor",
+        "selector": [
+          {
+            "filenamePattern": "*.csv"
+          }
+        ],
+        "priority": "option"
+      }
+    ],
     "commands": [
       {
         "command": "vscsv.showPreview",

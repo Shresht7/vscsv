@@ -27,11 +27,7 @@ const vscode = acquireVsCodeApi();
 
 // Event: Page Load
 window.addEventListener('load', () => {
-    postMessage({ command: 'ready', data: true }); // Notify the main thread that the webview is ready
-    main(); // Call the main function
-    // Restore the table state if it exists
-    const state = vscode.getState();
-    if (state) { table.update(state.data); }
+    main(); // Call the main function 
 });
 
 // ----
@@ -65,8 +61,8 @@ function handleMessageEvent(event: MessageEvent<VSCodeMessage>) {
     const message = event.data;
     switch (message.command) {
         case 'update':
+            if (!message?.data) { return; } // If no data is provided, do nothing
             table.update(message.data); // Update the table with new data
-            vscode.setState({ data: message.data }); // Save the table state
             break;
     }
 }

@@ -1,6 +1,9 @@
 // Library
 import Fuse from 'fuse.js';
 
+//Type Definitions
+import type { Cell, Data } from '../../library';
+
 // -----
 // TABLE
 // -----
@@ -20,13 +23,13 @@ export class Table {
     // -------------
 
     /** The data to be represented as a table */
-    private data: string[][] = [];
+    private data: Cell[][] = [];
 
     /** The headers of the table */
-    private headers: string[] = [];
+    private headers: Cell[] = [];
 
     /** Updates the table with the given data */
-    update(data: string[][]) {
+    update(data: Data<Cell>) {
         if (data?.length < 1) { return; }   // Return early if there is no data
         this.headers = data[0];             // Use the first row as the headers
         this.data = data.slice(1);          // Use the rest as the table data
@@ -42,7 +45,7 @@ export class Table {
     }
 
     /** Renders the html table */
-    render(data: string[][] = this.data) {
+    render(data: Cell[][] = this.data) {
         // Return early if there is no data
         if (data?.length < 1) { return; }
 
@@ -63,7 +66,7 @@ export class Table {
         if (!query) { return this.render(); } // Return early if there is no query and render the table as is
 
         // Setup the fuzzy search
-        const lines = this.data.map(x => x.join(' '));
+        const lines = this.data.map(row => row.map(cell => cell.value).join(' '));
         const fuse = new Fuse(lines, { threshold: 0.3, includeScore: true });
 
         // Search the data and sort by score (ascending)
@@ -82,7 +85,7 @@ export class Table {
     // ----------------
 
     /** Creates a table row */
-    private createRow(row: string[], tagName: 'th' | 'td' = 'td') {
+    private createRow(row: Cell[], tagName: 'th' | 'td' = 'td') {
         const tr = document.createElement('tr');
         for (const cell of row) {
             tr.appendChild(this.createCell(cell, tagName));
@@ -91,9 +94,9 @@ export class Table {
     }
 
     /** Creates a table cell */
-    private createCell(cell: string, tagName: 'th' | 'td' = 'td') {
+    private createCell(cell: Cell, tagName: 'th' | 'td' = 'td') {
         const td = document.createElement(tagName);
-        td.textContent = cell;
+        td.textContent = cell.value;
         td.style.padding = '0.35rem 0.5rem';
         return td;
     }

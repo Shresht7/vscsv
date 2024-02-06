@@ -15,6 +15,7 @@ import {
 	Symbols,
 	SyntaxHighlighting,
 } from './providers';
+import { CustomTextEditor } from './webview';
 
 // --------
 // ACTIVATE
@@ -45,6 +46,9 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// Register the status bar provider to provide status bar information
 	StatusBar.initialize(context);
+
+	// Register the custom text editor
+	CustomTextEditor.register(context);
 
 }
 
