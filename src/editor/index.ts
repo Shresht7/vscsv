@@ -175,8 +175,8 @@ export class CustomTextEditor implements vscode.CustomTextEditorProvider {
                 <footer>
                     <vscode-divider role="presentation"></vscode-divider>
                     <div id="search-input-container">
-                        <label for="search">Search</label>
-                        <vscode-text-field id="search" type="text" placeholder="Search..."></vscode-text-field>
+                        <label for="search">Filter</label>
+                        <vscode-text-field id="search" type="text" placeholder="Query..."></vscode-text-field>
                     </div>
                 </footer>
             </body>
