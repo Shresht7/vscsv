@@ -4,17 +4,28 @@ import { VSCSV } from '../library';
 import { language } from '../library/helpers';
 import { generateNonce } from './utils';
 import type { VSCodeMessage, WebviewMessage } from './types';
+import { EXTENSION_ID } from '../constants';
 
 // ------------------
 // CUSTOM TEXT EDITOR
 // ------------------
 
+/**
+ * This class represents a custom text editor for CSV/TSV files in VS Code.
+ * `CustomTextEditor` class that implements {@linkcode vscode.CustomTextEditorProvider}.
+ */
 export class CustomTextEditor implements vscode.CustomTextEditorProvider {
 
-    private static readonly viewType = 'vscsv.csvEditor';
+    /** The view type for the custom text editor */
+    private static readonly viewType = EXTENSION_ID + '.csvEditor';
 
+    /** The parser to use to parse the document */
     private static parser = new VSCSV();
 
+    /**
+     * Registers the CustomTextEditor provider with the given extension context.
+     * @param context The extension context. See {@linkcode vscode.ExtensionContext}.
+     */
     public static register(context: vscode.ExtensionContext) {
         context.subscriptions.push(
             vscode.window.registerCustomEditorProvider(
@@ -24,14 +35,24 @@ export class CustomTextEditor implements vscode.CustomTextEditorProvider {
         );
     }
 
+    /**
+     * Constructs a new instance of CustomTextEditor.
+     * @param context The extension context. See {@linkcode vscode.ExtensionContext}.
+     */
     constructor(private readonly context: vscode.ExtensionContext) { }
 
-    // Called when our custom editor is opened
+    /**
+     * Called when the custom editor is opened.
+     * @param document The text document associated with the editor. See {@linkcode vscode.TextDocument}
+     * @param webviewPanel The webview panel for the editor. See {@linkcode vscode.WebviewPanel}
+     * @param token A cancellation token. See {@linkcode vscode.CancellationToken}
+     */
     public async resolveCustomTextEditor(
         document: vscode.TextDocument,
         webviewPanel: vscode.WebviewPanel,
         token: vscode.CancellationToken
     ): Promise<void> {
+
         // Setup the initial content for the webview
         webviewPanel.webview.options = {
             enableScripts: true, // Enable JavaScript in the webview
@@ -63,8 +84,14 @@ export class CustomTextEditor implements vscode.CustomTextEditorProvider {
         if (data) {
             webviewPanel.webview.postMessage({ command: 'update', data } as VSCodeMessage);
         }
+
     }
 
+    /**
+     * Parses the given text document and returns the parsed data.
+     * @param document The text document to parse. See {@linkcode vscode.TextDocument}
+     * @returns The parsed data, or `undefined` if the document is not a supported language.
+     */
     private parseDocument(document: vscode.TextDocument) {
         if (!language.isSupported(document.languageId)) { return; } // Return early if the document is not a supported language
         const delimiter = language.delimiters[document.languageId];
@@ -75,6 +102,10 @@ export class CustomTextEditor implements vscode.CustomTextEditorProvider {
     // MESSAGES
     // --------
 
+    /**
+     * Handles the messages received from the webview.
+     * @param message The message received from the webview.
+     */
     private handleMessage(message: WebviewMessage) {
         switch (message.command) {
             case 'error':
@@ -87,13 +118,22 @@ export class CustomTextEditor implements vscode.CustomTextEditorProvider {
     // WEBVIEW
     // -------
 
-    /** Get the uri for the webview resource */
+    /**
+     * Gets the URI for the webview resource.
+     * @param webview The webview instance.
+     * @param pathSegments The path segments of the resource.
+     * @returns The URI for the webview resource.
+     */
     private getWebviewUri(webview: vscode.Webview, ...pathSegments: string[]): vscode.Uri {
         const path = vscode.Uri.joinPath(this.context.extensionUri, ...pathSegments);
         return webview.asWebviewUri(path);
     }
 
-    /** Get the html content for the webview */
+    /**
+     * Gets the HTML content for the webview.
+     * @param webview The webview instance.
+     * @returns The HTML content for the webview.
+     */
     private getHtmlForWebview(webview: vscode.Webview): string {
 
         // Local path to script and css for the webview
