@@ -31,6 +31,11 @@ export class CustomTextEditor implements vscode.CustomTextEditorProvider {
             vscode.window.registerCustomEditorProvider(
                 CustomTextEditor.viewType,
                 new CustomTextEditor(context),
+                {
+                    webviewOptions: {
+                        retainContextWhenHidden: true // Retain the webview's context when it is hidden
+                    }
+                }
             )
         );
     }
