@@ -87,9 +87,20 @@ export class Table {
     /** Creates a table row */
     private createRow(row: Cell[], tagName: 'th' | 'td' = 'td') {
         const tr = document.createElement('tr');
+
+        // Add Line Number 
+        const lineNumber = row[0].line;
+        const lineNumberCell = document.createElement(tagName);
+        if (lineNumber) {
+            lineNumberCell.textContent = lineNumber.toString();
+        }
+        tr.appendChild(lineNumberCell);
+
+        // Add Cell Data
         for (const cell of row) {
             tr.appendChild(this.createCell(cell, tagName));
         }
+
         return tr;
     }
 
