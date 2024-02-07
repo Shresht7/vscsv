@@ -85,6 +85,13 @@ export class Table {
     private createRow(row: string[], tagName: 'th' | 'td' = 'td', lineNumber: number = 0) {
         const tr = document.createElement('tr');
 
+        // Add sticky header property to the header row
+        if (tagName === 'th') {
+            tr.style.position = 'sticky';
+            tr.style.top = '0';
+            tr.style.backgroundColor = 'var(--vscode-editor-background)';
+        }
+
         // Add Line Number
         const lineNumberCell = document.createElement(tagName);
         if (lineNumber) {
