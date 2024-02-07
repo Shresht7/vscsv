@@ -9,11 +9,12 @@ body {
 footer {
     position: fixed;
     width: 95%;
-    bottom: 0.5rem;
+    bottom: 0;
+    background-color: var(--vscode-editor-background);
 }
 
 #search-input-container {
-    margin-top: 0.5rem;
+    margin: 0.5rem 0;
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
