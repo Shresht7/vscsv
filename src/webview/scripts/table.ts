@@ -53,8 +53,8 @@ export class Table {
         this.element.appendChild(this.createRow(this.headers, 'th'));
 
         // Create the data rows
-        for (const row of data) {
-            this.element.appendChild(this.createRow(row, 'td'));
+        for (const r in data) {
+            this.element.appendChild(this.createRow(data[r], 'td', +r + 1)); // We add 1 because the line numbers are 1-based while the index is 0-based
         }
     }
 
@@ -82,11 +82,10 @@ export class Table {
     // ----------------
 
     /** Creates a table row */
-    private createRow(row: string[], tagName: 'th' | 'td' = 'td') {
+    private createRow(row: string[], tagName: 'th' | 'td' = 'td', lineNumber: number = 0) {
         const tr = document.createElement('tr');
 
-        // Add Line Number 
-        const lineNumber = row[0].line;
+        // Add Line Number
         const lineNumberCell = document.createElement(tagName);
         if (lineNumber) {
             lineNumberCell.textContent = lineNumber.toString();
