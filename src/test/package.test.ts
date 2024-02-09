@@ -3,8 +3,7 @@ import * as vscode from 'vscode';
 import path from 'node:path';
 import assert from 'node:assert';
 import { Settings } from '../configuration/settings';
-import { Configuration } from '../configuration';
-import { EXTENSION_ID } from '../constants';
+import { EXTENSION_ID } from '../library';
 
 const extensionPath = path.join(__dirname, '..', '..', 'package.json');
 

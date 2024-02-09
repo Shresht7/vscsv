@@ -1,6 +1,6 @@
 // Library
 import * as vscode from 'vscode';
-import { EXTENSION_ID } from '../constants';
+import { EXTENSION_ID } from '../library';
 
 // Commands
 import { showPreview } from './showPreview';

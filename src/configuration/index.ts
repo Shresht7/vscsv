@@ -1,7 +1,7 @@
 // Library
 import * as vscode from 'vscode';
 import { Settings, SettingsKey } from './settings';
-import { EXTENSION_ID } from '../constants';
+import { EXTENSION_ID } from '../library';
 
 // -------------
 // CONFIGURATION
