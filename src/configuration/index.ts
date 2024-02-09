@@ -26,9 +26,9 @@ export class Configuration {
     private static listeners: Partial<Record<SettingsKey, Listener<any>>> = {};
 
     /**
-     * Register a listener for the given configuration key
+     * Register a listener for the given configuration key. The listener is called when this configuration is changed.
      * @param name The name of the configuration key to listen to
-     * @param listener The listener to register
+     * @param listener The listener to register for the given configuration key
      */
     public static registerListener<K extends SettingsKey>(name: K, listener: Listener<typeof Settings[K]>) {
         this.listeners[name] = listener;
