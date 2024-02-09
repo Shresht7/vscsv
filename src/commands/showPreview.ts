@@ -1,8 +1,6 @@
 // Library
 import * as vscode from 'vscode';
 import { Webview } from '../webview';
-import { Parser } from '../library';
-import { language } from '../library/helpers';
 
 // --------------------
 // SHOW PREVIEW COMMAND
@@ -11,21 +9,14 @@ import { language } from '../library/helpers';
 /** Opens a preview window for the CSV file. */
 export async function showPreview(context: vscode.ExtensionContext) {
 
+    // Exit early if no document is open
     const document = vscode.window.activeTextEditor?.document;
-    if (!document) { return; } // Exit early if no document is open
-
-    // Return early if the document is not a supported language
-    if (!language.isSupported(document.languageId)) { return; }
+    if (!document) { return; }
 
     // Render the webview
     await Webview.render(context.extensionUri);
 
-    // Parse the data
-    const delimiter = language.delimiters[document.languageId];
-    const parser = new Parser({ delimiter });
-    const data = parser.parse(document.getText());
-
-    // Send the data to the webview
-    Webview.postMessage({ command: 'update', data });
+    // Parse the data and send it to the webview
+    Webview.update(document);
 
 }

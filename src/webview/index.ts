@@ -76,15 +76,9 @@ export class Webview {
 
         // Listen for when a supported text document is opened and update the webview with the new data
         vscode.window.onDidChangeActiveTextEditor((e) => {
-            if (!e || !language.isSupported(e.document.languageId)) { return; } // Return early if the document is not a supported language
-            if (this.currentPanel?.panel.visible) {
-                // Parse the data
-                const delimiter = language.delimiters[e.document.languageId];
-                const parser = new Parser({ delimiter });
-                const data = parser.parse(e.document.getText());
-                // Send the data to the webview
-                this.postMessage({ command: 'update', data });
-            }
+            if (!e?.document) { return; } // Return early if no document is open
+            if (!this.currentPanel?.panel.visible) { return; } // Return early if the panel is not visible
+            this.update(e.document); // Update the webview with the new data from the document
         }, null, this.currentPanel?.disposables);
 
         // Return a promise that resolves when the webview sends a "ready" message (on page load)
