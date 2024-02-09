@@ -66,9 +66,3 @@ export class Configuration {
 
 /** A callback function that is called when the configuration is changed */
 type Listener<T extends any> = (value: T) => void;
-
-/** Get the configuration id for the given string */
-type ID<T extends string> = `${typeof EXTENSION_ID}.${T}`;
-
-/** Extract the name of the configuration key */
-type ExtractName<T extends string> = T extends `${infer _}.${infer Name}` ? Name : never;
