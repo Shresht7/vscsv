@@ -34,7 +34,11 @@ export class Configuration {
         this.listeners[name] = listener;
     }
 
-    /** Initialize the configuration listeners */
+    /**
+     * Initializes the extension by registering the configuration change listener.
+     * This listener checks if any of the configuration keys have changed and calls the registered listener for that key.
+     * @param context The extension context provided by Visual Studio Code.
+     */
     public static initialize(context: vscode.ExtensionContext) {
 
         // Register the configuration change listener
@@ -65,4 +69,4 @@ export class Configuration {
 // -------------
 
 /** A callback function that is called when the configuration is changed */
-type Listener<T extends any> = (value: T) => void;
+type Listener<T> = (value: T) => void;
