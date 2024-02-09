@@ -148,7 +148,7 @@ export class Webview {
         private readonly extensionUri: vscode.Uri
     ) {
         // Set the webview's initial html content
-        this.update();
+        this.panel.webview.html = this.getHtmlForWebview();
 
         // Listen for when the panel is disposed
         // This happens when the user closes the panel or when the panel is closed programmatically
@@ -191,11 +191,6 @@ export class Webview {
 
     // CONTENT
     // -------
-
-    /** Update the webview */
-    private update() {
-        this.panel.webview.html = this.getHtmlForWebview();
-    }
 
     /** Get the uri for the webview resource */
     private getWebviewUri(...pathSegments: string[]): vscode.Uri {
