@@ -125,6 +125,26 @@ export class Webview {
         this.currentPanel?.panel.webview.postMessage(message);
     }
 
+    // DOCUMENT
+    // --------
+
+    /**
+     * Updates the webview with the parsed data from the given text document.
+     * @param document The text document to parse and update the webview with.
+     */
+    public static update(document: vscode.TextDocument) {
+        // Return early if the document is not a supported language
+        if (!language.isSupported(document.languageId)) { return; }
+
+        // Parse the data
+        const delimiter = language.delimiters[document.languageId];
+        const parser = new Parser({ delimiter });
+        const data = parser.parse(document.getText());
+
+        // Send the data to the webview
+        this.postMessage({ command: 'update', data });
+    }
+
     // --------
     // INSTANCE
     // --------
