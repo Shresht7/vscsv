@@ -1,6 +1,12 @@
 // Library
 import * as vscode from 'vscode';
+import { Parser } from '../library';
+
+// Helpers
+import { language } from '../library/helpers';
 import { generateNonce } from './utils';
+
+// Type Definitions
 import type { VSCodeMessage, WebviewMessage } from './types';
 
 // -------
@@ -67,6 +73,19 @@ export class Webview {
             // ...Otherwise, create a new panel
             this.currentPanel = this.create(extensionUri, viewColumn);
         }
+
+        // Listen for when a supported text document is opened and update the webview with the new data
+        vscode.window.onDidChangeActiveTextEditor((e) => {
+            if (!e || !language.isSupported(e.document.languageId)) { return; } // Return early if the document is not a supported language
+            if (this.currentPanel?.panel.visible) {
+                // Parse the data
+                const delimiter = language.delimiters[e.document.languageId];
+                const parser = new Parser({ delimiter });
+                const data = parser.parse(e.document.getText());
+                // Send the data to the webview
+                this.postMessage({ command: 'update', data });
+            }
+        }, null, this.currentPanel?.disposables);
 
         // Return a promise that resolves when the webview sends a "ready" message (on page load)
         return new Promise((resolve, reject) => {
