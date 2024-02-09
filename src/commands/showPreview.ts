@@ -13,7 +13,7 @@ export async function showPreview(context: vscode.ExtensionContext) {
     const document = vscode.window.activeTextEditor?.document;
     if (!document) { return; }
 
-    // Render the webview
+    // Render the webview and wait for it to load
     await Webview.render(context.extensionUri);
 
     // Parse the data and send it to the webview
