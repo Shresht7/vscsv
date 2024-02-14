@@ -4,7 +4,7 @@
   "description": "VS Code extension for CSV/TSV language support",
   "author": "Shresht7",
   "publisher": "Shresht7",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "license": "MIT",
   "engines": {
     "vscode": "^1.85.0"
