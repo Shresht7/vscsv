@@ -1,6 +1,6 @@
 // Library
 import * as vscode from 'vscode';
-import { VSCSV } from '../../library';
+import { DocumentCache } from '../../library';
 
 // --------------
 // HOVER PROVIDER
@@ -42,16 +42,11 @@ export class HoverProvider implements vscode.HoverProvider {
     // INSTANCE
     // --------
 
-    /** The CSV parser */
-    private parser = new VSCSV();
-
     provideHover(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): vscode.ProviderResult<vscode.Hover> {
 
-        // Determine the delimiter to use based on the language ID of the document
-        this.parser.determineDelimiter(document);
-
-        // Parse the document
-        const csv = this.parser.parse(document.getText());
+        // Get the parsed document from the cache
+        const csv = DocumentCache.get(document);
+        if (!csv) { return null; }
 
         // Iterate over the cells in the CSV document...
         for (const r in csv) {

@@ -1,6 +1,6 @@
 // Library
 import * as vscode from 'vscode';
-import { VSCSV } from '../../library';
+import { DocumentCache } from '../../library';
 
 // ------------------------
 // DOCUMENT SYMBOL PROVIDER
@@ -48,16 +48,10 @@ export class DocumentSymbolProvider implements vscode.DocumentSymbolProvider {
     // INSTANCE
     // --------
 
-    /** The CSV parser */
-    private parser = new VSCSV();
-
     public provideDocumentSymbols(
         document: vscode.TextDocument,
         token: vscode.CancellationToken
     ): vscode.ProviderResult<vscode.SymbolInformation[] | vscode.DocumentSymbol[]> {
-
-        // Determine the delimiter to use based on the language ID of the document
-        this.parser.determineDelimiter(document);
 
         /**
          * This {@link vscode.DocumentSymbol | symbol} will be the parent of all other symbols in the document
@@ -67,8 +61,9 @@ export class DocumentSymbolProvider implements vscode.DocumentSymbolProvider {
          */
         const documentSymbol = this.createDocumentSymbol(document);
 
-        // Parse the CSV document
-        const csv = this.parser.parse(document.getText());
+        // Get the parsed CSV document from the cache
+        const csv = DocumentCache.get(document);
+        if (!csv) { return []; }
 
         // Iterate over the rows in the CSV document...
         csv.forEach((row, r) => {
