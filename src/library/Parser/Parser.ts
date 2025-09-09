@@ -41,49 +41,39 @@ export abstract class _Parser<Cell extends ViableCellTypes = string> {
      * @see {@link ViableCellTypes}
      */
     protected parseLine(line: string, lineNumber?: number): Cell[] {
-        /** The cells of the line */
         const cells: Cell[] = [];
-
-        /** Whether or not the current character is inside of a quoted string */
+        let currentCell = "";
+        let columnStart = 0;
         let isQuoted = false;
 
-        /** The current cell */
-        let cell = "";
-        let columnNumber = 0;
-
-        // Iterate through each character in the line ...
-        for (let i = 0; i <= line.length; i++) {
-
-            /** The current character */
+        for (let i = 0; i < line.length; i++) {
             const char = line[i];
 
-            if (char === "\\") {
-                // If the current character is a backslash, skip it and collect the next character
-                cell += line[++i];
-                continue;
-            }
-
             if (char === '"') {
-                // If the current character is a quote, toggle the `isQuoted` flag
-                isQuoted = !isQuoted;
-            }
-
-            if ((char === this.delimiter && !isQuoted) || (i === line.length)) {
-                // If the current character is the delimiter and the `isQuoted` flag
-                // is not set, push the current cell to the `cells` array and reset the `cell` variable
-                cells.push(this.parseCell(cell, columnNumber, lineNumber));
-                columnNumber = i + 1; // The next column starts after the delimiter
-                cell = "";
-                continue;
+                // If we encounter a quote...
+                if (isQuoted && line[i + 1] === '"') {
+                    // ...and we're in a quoted field and the next character is also a quote,
+                    // it's an escaped quote (according to RFC 4180).
+                    currentCell += '"';
+                    i++; // Skip the next quote as it's part of the escape sequence.
+                } else {
+                    // Otherwise, it's a regular quote, so we toggle the `isQuoted` flag.
+                    isQuoted = !isQuoted;
+                }
+            } else if (char === this.delimiter && !isQuoted) {
+                // If we encounter a delimiter and we're not in a quoted field,
+                // we've reached the end of a cell.
+                cells.push(this.parseCell(currentCell, columnStart, lineNumber));
+                currentCell = "";
+                columnStart = i + 1;
             } else {
-                // Otherwise, keep collecting the current cell
-                cell += char;
-                continue;
+                // Otherwise, we just append the character to the current cell.
+                currentCell += char;
             }
-
         }
 
-        // Return the cells parsed from the line
+        // Add the last cell to the row.
+        cells.push(this.parseCell(currentCell, columnStart, lineNumber));
         return cells;
     }
 
@@ -113,8 +103,16 @@ export abstract class _Parser<Cell extends ViableCellTypes = string> {
     protected serializeLine(row: Cell[]): string {
         return row.map((c) => {
             const cell = c.toString();
-            const needsQuoting = cell.includes(this.delimiter) || cell.includes('\\');
-            return needsQuoting ? `"${cell}"` : cell;
+            // According to RFC 4180, a cell must be quoted if it contains a delimiter, a newline, or a double-quote.
+            const needsQuoting = cell.includes(this.delimiter) || cell.includes('"') || cell.includes('\n');
+
+            if (needsQuoting) {
+                // To escape a double-quote, it must be doubled.
+                const escapedCell = cell.replace(/"/g, '""');
+                return `"${escapedCell}"`;
+            }
+
+            return cell;
         }).join(this.delimiter);
     }
 
@@ -127,6 +125,8 @@ export abstract class _Parser<Cell extends ViableCellTypes = string> {
     }
 
 }
+
+
 
 // ------
 // PARSER
