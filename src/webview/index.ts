@@ -208,7 +208,7 @@ export class Webview {
         // Use a nonce to allow only specific scripts to run
         const nonce = generateNonce();
 
-        return `<!DOCTYPE html>
+        return /* html */ `<!DOCTYPE html>
         <html lang="en">
             <head>
                 <meta charset="UTF-8">
