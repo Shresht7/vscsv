@@ -1,5 +1,6 @@
 // Library
 import * as vscode from 'vscode';
+import { DocumentCache } from './library';
 
 // Configuration
 import { Configuration } from './configuration';
@@ -22,6 +23,9 @@ import {
 
 /** This method is called when your extension is activated */
 export function activate(context: vscode.ExtensionContext) {
+
+	// Initialize the document cache
+	DocumentCache.initialize(context);
 
 	// Register the configuration manager
 	Configuration.initialize(context);
