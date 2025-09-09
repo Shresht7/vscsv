@@ -23,6 +23,10 @@ A Visual Studio Code extension for CSV/TSV language support.
 
 ---
 
+## 📕 References
+
+- [RFC 4180: Common Format and MIME Type for Comma-Separated Values (CSV) Files](https://www.rfc-editor.org/rfc/rfc4180.html)
+
 ## 📃 License
 
 This project is licensed under the [MIT License](./LICENSE) - see the [LICENSE](LICENSE) file for details.
